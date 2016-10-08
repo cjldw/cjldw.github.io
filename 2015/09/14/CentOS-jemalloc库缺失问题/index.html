@@ -1,0 +1,21 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> CentOS jemalloc库缺失问题 · vvotm</title><meta name="description" content="CentOS jemalloc库缺失问题 - vvotm(luowen)"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/loovien" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/vvotm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/me/" target="_self" class="nav-list-link">ABOUTME</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">CentOS jemalloc库缺失问题</h1><div class="post-info">Sep 14, 2015</div><div class="post-content"><p>今天编译redis, 报jemalloc库缺失, 百度,google 得出一下解答, 亲测OK。</p>
+<a id="more"></a>
+<h2 id="jemalloc-库安装"><a href="#jemalloc-库安装" class="headerlink" title="jemalloc 库安装"></a>jemalloc 库安装</h2><ul>
+<li><p>最近编译redis, varnish老薄jemalloc缺失.</p>
+</li>
+<li><p>到<a href="https://dl.fedoraproject.org/pub/epel/6/x86_64/repoview/jemalloc.html" target="_blank" rel="external">网站</a>下载对应的rpm包</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh jemalloc-3.6.0-1.el6.&#123;i686 | X86_64&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在编译一次</p>
+</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/09/29/RazorSQL-注册码/" class="prev">PREV</a><a href="/2015/09/10/判断ip是内网还是外网-判断请求来之pc还是mobile/" class="next">NEXT</a></div><div data-thread-key="2015/09/14/CentOS-jemalloc库缺失问题/" data-title="CentOS jemalloc库缺失问题" data-url="http://vvotm.github.io/2015/09/14/CentOS-jemalloc库缺失问题/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"superwm"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><div class="copyright"><p>© 2015 - 2016 <a href="http://vvotm.github.io">vvotm(luowen)</a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

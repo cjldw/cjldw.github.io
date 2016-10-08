@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 自动更新hosts文件, 访问google, facebook · vvotm</title><meta name="description" content="自动更新hosts文件, 访问google, facebook - vvotm(luowen)"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/loovien" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/vvotm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/me/" target="_self" class="nav-list-link">ABOUTME</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">自动更新hosts文件, 访问google, facebook</h1><div class="post-info">Dec 28, 2015</div><div class="post-content"><p>此脚本自动抓去racaljk的repository中hosts文件, 替换本地host, 实现翻墙功能。<br>hosts访问只限于查询资料, 涉及国外视频网站可能不给力。</p>
+<a id="more"></a>
+<h2 id="脚本自动获取-racaljk-project-hosts文件-racaljk自带更新脚本-个人嫌复杂-写此简单能用版本-和本地hosts文件合并-使用–start-–line-保留本地hosts文件行数"><a href="#脚本自动获取-racaljk-project-hosts文件-racaljk自带更新脚本-个人嫌复杂-写此简单能用版本-和本地hosts文件合并-使用–start-–line-保留本地hosts文件行数" class="headerlink" title="脚本自动获取 racaljk project hosts文件(racaljk自带更新脚本, 个人嫌复杂, 写此简单能用版本), 和本地hosts文件合并, 使用–start, –line 保留本地hosts文件行数"></a>脚本自动获取 <a href="https://github.com/racaljk/hosts" target="_blank" rel="external">racaljk project</a> hosts文件(racaljk自带更新脚本, 个人嫌复杂, 写此简单能用版本), 和本地hosts文件合并, 使用–start, –line 保留本地hosts文件行数</h2><h2 id="基本要求系统"><a href="#基本要求系统" class="headerlink" title="基本要求系统"></a>基本要求系统</h2><ul>
+<li>Python3.x.x</li>
+<li>应hosts文件权限关系</li>
+<li>windows需要使用administrator 权限</li>
+<li>linux需要使用root权限</li>
+</ul>
+<h2 id="加入计划任务-windows"><a href="#加入计划任务-windows" class="headerlink" title="加入计划任务(windows)"></a>加入计划任务(windows)</h2><ul>
+<li>打开开始菜单, 搜索框输入<strong>计划任务</strong> 或快捷键[win + r] 粘贴 <code>%windir%\system32\taskschd.msc /s</code></li>
+</ul>
+<p><img src="http://images2015.cnblogs.com/blog/451327/201512/451327-20151228170213417-181074786.png" alt=""></p>
+<ul>
+<li>右击 [任务计划库] -&gt; [创建任务]</li>
+</ul>
+<p><img src="http://images2015.cnblogs.com/blog/451327/201512/451327-20151228170224932-659219118.png" alt=""></p>
+<ul>
+<li>常规选项卡, 添加名称, 描述</li>
+</ul>
+<p><img src="http://images2015.cnblogs.com/blog/451327/201512/451327-20151228170321089-2002023170.png" alt=""></p>
+<ul>
+<li>点击触发器选项卡 [新建] 添加触发器, 比如多久运行, 什么时候执行</li>
+</ul>
+<p><img src="http://images2015.cnblogs.com/blog/451327/201512/451327-20151228165952292-1171750287.png" alt=""></p>
+<ul>
+<li>点击操作选项卡   [新建] 添加脚本执行</li>
+</ul>
+<p><img src="http://images2015.cnblogs.com/blog/451327/201512/451327-20151228170603885-700230869.png" alt=""></p>
+<h2 id="Linux安装方法"><a href="#Linux安装方法" class="headerlink" title="Linux安装方法"></a>Linux安装方法</h2><ul>
+<li><p>添加执行权限. <code>shell&gt; chmod +x UpdateHosts.py</code></p>
+</li>
+<li><p>添加计划任务. <code>shell&gt; echo &#39; 0 09 * * * python /path/to/UpdateHosts.py --line 60 --os linux 2&gt;&amp;1 &gt;/dev/null&#39; &gt;&gt; /var/spool/cron/root</code></p>
+</li>
+<li>每天9点半更新, 根据自己时间更新</li>
+</ul>
+<h2 id="UpdateHosts-py-代码如下-欢迎拍砖"><a href="#UpdateHosts-py-代码如下-欢迎拍砖" class="headerlink" title="UpdateHosts.py 代码如下(欢迎拍砖)"></a>UpdateHosts.py 代码如下(欢迎拍砖)</h2><pre><code><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/python env</span></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="string">"""</span><br><span class="line">    The Script get from github racaljk's hosts project and merge localhost host file.</span><br><span class="line">    Used: python UPdateHosts.py --help get detail information.</span><br><span class="line">    Author: Gawim &lt;bigpao.luo@gmail.com&gt;</span><br><span class="line">    Time: 2015-12-28</span><br><span class="line">    Require: python3.x.x</span><br><span class="line">    Notes: please use administrator execute it. before execute script remember backup your hosts file.</span><br><span class="line">    in the first line of hosts, you can set how many line you don't want replace. for example </span><br><span class="line">    ```hosts</span><br><span class="line">        # 11</span><br><span class="line">        # Copyright (c) 1993-2009 Microsoft Corp.</span><br><span class="line">        #</span><br><span class="line">        # This is a sample HOSTS file used by Microsoft TCP/IP for Windows.</span></span><br></pre></td></tr></table></figure>
+
+        that will keep 11 line
+    &quot;&quot;&quot;
+
+    WINDOWS_HOST = &quot;C:\Windows\System32\drivers\etc\hosts&quot;
+    LINUX_HOST = &quot;/etc/hosts&quot;
+    GITHUB_HOSTS = &quot;https://raw.githubusercontent.com/racaljk/hosts/master/hosts&quot;  # copy github racaljk hosts project
+
+    def getParam():
+        &quot;Obtain The Extran Parameters&quot;
+        parser = argparse.ArgumentParser()
+        parser.add_argument(&quot;--start&quot;, help=&quot;Input The Line Which You Need Not To Replace&quot;, default=&quot;0&quot;, type=int)
+        parser.add_argument(&quot;--line&quot;, help=&quot;Input The Line Which You Need Not To Replace&quot;, default=&quot;50&quot;, type=int)
+        parser.add_argument(&quot;--os&quot;, help=&quot;What System You Use&quot;, default=&quot;windows&quot;, choices=[&quot;linux&quot;, &quot;window&quot;, &quot;OSX&quot;])
+
+        return parser.parse_args()
+
+    def getHostsNeedContent(hostsPath, lineStart, lineOffset):
+
+        needHostDomain = []
+        with open(hostsPath, mode=&quot;r+&quot;, encoding=&quot;utf-8&quot;) as fileHandle:
+            customerLineNumStr = fileHandle.readline().strip(&quot;#&quot;).strip();
+            try:
+                customerLineNum = int(customerLineNumStr)
+            except ValueError:
+                customerLineNum = lineOffset
+            fileHandle.seek(lineStart)
+            i = 0
+            while i &lt; customerLineNum:
+                needHostDomain.append(fileHandle.readline())
+                i += 1
+            return &quot;&quot;.join(needHostDomain)
+
+    def getGitHubHostsAndWriteNewHots(needHostContents, hostsPath):
+        fileHandle = open(hostsPath, mode=&quot;w&quot;, encoding=&quot;utf-8&quot;)
+        fileHandle.write(needHostContents)
+        with request.urlopen(GITHUB_HOSTS) as socketHandle:
+            for contents in socketHandle:
+                fileHandle.write(contents.decode(&quot;utf-8&quot;))
+        fileHandle.close()
+        return True
+
+    def main():
+        options = getParam()
+        if options.os == &quot;windows&quot;:
+            hostsPath = WINDOWS_HOST
+        elif options.os == &quot;linux&quot;:
+            hostsPath = LINUX_HOST
+        elif options.os == &quot;OSX&quot;:
+            hostsPath = LINUX_HOST
+        else:
+            raise ValueError(&quot;Please Tell Me What System You Used&quot;)
+        lineStart = options.start
+        lineOffset = options.line
+
+        needHostContents = getHostsNeedContent(hostsPath, lineStart, lineOffset)  # get localhost hosts line need merge default start 0 line 50
+
+        resultSet = getGitHubHostsAndWriteNewHots(needHostContents, hostsPath)  # get github hosts and merge localhost hosts
+        print(resultSet);
+
+    if __name__ == &quot;__main__&quot;:
+        main()
+
+```
+</code></pre></div></article></div></section><footer><div class="paginator"><a href="/2016/04/13/时间戳转日期，日期装时间戳快速tempermonkey脚本/" class="prev">PREV</a><a href="/2015/12/25/PHP5-4-Trait-使用/" class="next">NEXT</a></div><div data-thread-key="2015/12/28/自动更新hosts文件-访问google-facebook/" data-title="自动更新hosts文件, 访问google, facebook" data-url="http://vvotm.github.io/2015/12/28/自动更新hosts文件-访问google-facebook/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"superwm"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><div class="copyright"><p>© 2015 - 2016 <a href="http://vvotm.github.io">vvotm(luowen)</a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

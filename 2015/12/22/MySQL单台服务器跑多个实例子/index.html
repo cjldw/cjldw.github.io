@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MySQL单台服务器跑多个实例子 · vvotm</title><meta name="description" content="MySQL单台服务器跑多个实例子 - vvotm(luowen)"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/loovien" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/vvotm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/me/" target="_self" class="nav-list-link">ABOUTME</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">MySQL单台服务器跑多个实例子</h1><div class="post-info">Dec 22, 2015</div><div class="post-content"><p>单台数据服务器资源往往是跑不满的, 如何更有效的利用服务器资源? 可以当台数据服务器跑多个MySQL实例。</p>
+<a id="more"></a>
+<h2 id="mysqld-multi-命令实现管理"><a href="#mysqld-multi-命令实现管理" class="headerlink" title="mysqld_multi 命令实现管理"></a>mysqld_multi 命令实现管理</h2><ol>
+<li><p>每个mysql实例都需要有独立的数据目录, socket链接, 端口. 所以, 为每个实例创建数据目录</p>
+<ul>
+<li><p>到mysql的数据目录下, 复制整个目录(有几个实例,就复制几份), 命名为新的实例名字(任意) (本例子拷贝了3份,分别放在/var/data/data{1,2,3}, Unix, Unix-like 注意文件权限)</p>
+</li>
+<li><p>多个实例可以共享一份数据目录, 但强烈不建议, 会有意想不到的问到<a href="http://dev.mysql.com/doc/refman/5.7/en/multiple-data-directories.html" target="_blank" rel="external">mysql官方</a></p>
+</li>
+</ul>
+</li>
+<li><p>修改my.cnf文件(本例子跑了3个实例子分别[1,2,3])</p>
+ <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line"># 默认 使用/tmp/mysql.sock1</span><br><span class="line">socket = /tmp/mysql.sock1</span><br><span class="line"></span><br><span class="line">[mysqld1]</span><br><span class="line">socket     = /tmp/mysql.sock1</span><br><span class="line">port       = 3306</span><br><span class="line">pid-file   = /var/data/data1/data1.pid</span><br><span class="line">datadir    = /var/data/data1</span><br><span class="line">user       = mysql</span><br><span class="line"></span><br><span class="line">[mysqld2]</span><br><span class="line">#mysqld     = /usr/bin/mysqld_safe</span><br><span class="line">#mysqladmin = /usr/bin/mysqladmin</span><br><span class="line">socket     = /tmp/mysql.sock2</span><br><span class="line">port       = 3307</span><br><span class="line">pid-file   = /var/data/data2/data2.pid</span><br><span class="line">datadir    = /var/data/data2</span><br><span class="line">user	   = mysql</span><br><span class="line"></span><br><span class="line">[mysqld3]</span><br><span class="line">#mysqld     = /usr/bin/mysqld_safe</span><br><span class="line">#mysqladmin = /usr/bin/mysqladmin</span><br><span class="line">socket     = /tmp/mysql.sock3</span><br><span class="line">port       = 3308</span><br><span class="line">pid-file   = /var/data/data3/data3.pid</span><br><span class="line">datadir    = /var/data/data3</span><br><span class="line">user	   = mysql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动/停止</p>
+<ul>
+<li><p><code>mysqld_multi [OPTIONS] {start|stop|report} [GNR,GNR,GNR...]</code> <strong>GNR</strong> 表示组名, 本例子启动所有为<code>mysqld_multi start 1-3</code>, 启动单个 <code>mysqld_multi start 1</code></p>
+</li>
+<li><p>同理 停止 <code>mysqld_multi stop 1-3</code></p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="mysqld-safe-实现"><a href="#mysqld-safe-实现" class="headerlink" title="mysqld_safe 实现"></a>mysqld_safe 实现</h2><ol>
+<li><p>这种方式实现很简单了, 直接使用命令</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysqld_safe <span class="comment">--defaults-file=/etc/my1.cnf --user=mysql &amp;</span></span><br><span class="line">mysqld_safe <span class="comment">--defaults-file=/etc/my2.cnf --user=mysql &amp;</span></span><br><span class="line">mysqld_safe <span class="comment">--datadir=/var/data/data3 --pid-file=/var/data/data3/data3.pid --socket=/tmp/mysql.sock3 --user=mysql &amp;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/12/25/PHP5-4-Trait-使用/" class="prev">PREV</a><a href="/2015/09/29/RazorSQL-注册码/" class="next">NEXT</a></div><div data-thread-key="2015/12/22/MySQL单台服务器跑多个实例子/" data-title="MySQL单台服务器跑多个实例子" data-url="http://vvotm.github.io/2015/12/22/MySQL单台服务器跑多个实例子/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"superwm"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><div class="copyright"><p>© 2015 - 2016 <a href="http://vvotm.github.io">vvotm(luowen)</a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>
