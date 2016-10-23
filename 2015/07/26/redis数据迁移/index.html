@@ -9,7 +9,7 @@
 </ul>
 <h2 id="将数据从本地服务器迁移到另外一台服务器上"><a href="#将数据从本地服务器迁移到另外一台服务器上" class="headerlink" title="将数据从本地服务器迁移到另外一台服务器上"></a>将数据从本地服务器迁移到另外一台服务器上</h2><p>很遗憾,也是没有批量处理,只有<a href="http://redis.io/commands/migrate" target="_blank" rel="external">MIGRATE</a>命令, MIGRATE HOST(目标主机) PORT(目标端口) KEY(需要移动的key) DISTINATION_DB(目标库中) [COPY(拷贝本地数据,不删除)| REPLACE(覆盖目的主机上的键值) | 不填就等于复制本地后在删除本地数据 ] 只能单个移动,实现</p>
 <pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -n 1 keys <span class="string">'*'</span> | grep regex | xargs -I <span class="string">'&#123;&#125;'</span> redis-cli -n 1 migrate 192.168.1.100 11211 <span class="string">'&#123;&#125;'</span> 2 COPY</span><br></pre></td></tr></table></figure>
-</code></pre></div></article></div></section><footer><div class="paginator"><a href="/2015/07/27/Haproxy-Configuration/" class="prev">PREV</a><a href="/2015/07/26/CentOS-无人值守安装-ftp模式/" class="next">NEXT</a></div><div data-thread-key="2015/07/26/redis数据迁移/" data-title="redis数据迁移" data-url="http://vvotm.github.io/2015/07/26/redis数据迁移/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"superwm"};
+</code></pre></div></article></div></section><footer><div class="paginator"><a href="/2015/07/27/Haproxy-Configuration/" class="prev">上一篇</a><a href="/2015/07/26/CentOS-无人值守安装-ftp模式/" class="next">下一篇</a></div><div data-thread-key="2015/07/26/redis数据迁移/" data-title="redis数据迁移" data-url="http://vvotm.github.io/2015/07/26/redis数据迁移/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"superwm"};
 (function() {
   var ds = document.createElement('script');
   ds.type = 'text/javascript';ds.async = true;
