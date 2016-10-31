@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> phpstorm-debug · vvotm</title><meta name="description" content="phpstorm-debug - vvotm(luowen)"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/loovien" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/vvotm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/me/" target="_self" class="nav-list-link">ABOUTME</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">phpstorm-debug</h1><div class="post-info">Oct 31, 2016</div><div class="post-content"><p>phpstorm 是一个php开发利器,本博客简单的描述如何使用phpstrom2016.2实现phpweb应用debug. 简单单个php脚本不做解释.<br>英文好的同学直接阅读<a href="https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html" target="_blank" rel="external">官方文档</a>会更加详细</p>
+<a id="more"></a>
+<h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><ul>
+<li><p>下载xdebug扩展包, (windows下载对应的xdebug.dll), unix-like下载xdebug.so或自行编译(phpize)不多介绍</p>
+</li>
+<li><p>配置xdebug注入到php引擎中, 实现断点拦截调试</p>
+</li>
+<li><p>配置守护进程模式</p>
+</li>
+<li><p>配置运行时(just in time) 模式</p>
+</li>
+</ul>
+<h4 id="下载debug"><a href="#下载debug" class="headerlink" title="下载debug"></a>下载debug</h4><ul>
+<li><p>到<a href="https://xdebug.org/" target="_blank" rel="external">xdebug</a>下载对应的版本到ext目录下</p>
+</li>
+<li><p>编辑<code>php.ini</code>文件, 找到对应的[xdebug]端, 加入xdebug扩展</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[xdebug]</span><br><span class="line">zend_extension=php_xdebug.dll</span><br><span class="line">xdebug.remote_enable=<span class="number">1</span></span><br><span class="line">xdebug.remote_connect_back=<span class="number">1</span></span><br><span class="line">xdebug.remote_host=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">xdebug.remote_port=<span class="number">9999</span></span><br><span class="line">debug.show_local_vars=<span class="number">0</span></span><br><span class="line">xdebug.var_display_max_data=<span class="number">10000</span></span><br><span class="line">xdebug.var_display_max_depth=<span class="number">20</span></span><br><span class="line">xdebug.show_exception_trace=<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>  <strong>注意<code>xdebug_remote_port=9999</code> 默认是9000, 由于我本地php-cgi跑的端口是9000, 所以修改了, 后面对应的phpstrom也要修改默认9000 =&gt; 9999端口.</strong></p>
+</li>
+<li><p>重启服务, apache(mod)形式重启apache, nginx+fpm, 重启fpm</p>
+</li>
+</ul>
+<h4 id="配置ide注入"><a href="#配置ide注入" class="headerlink" title="配置ide注入"></a>配置ide注入</h4><ul>
+<li><p>打开<code>File|Settings</code>对话框, 选择<code>Languages&amp;Frameworks.</code>, 在php页面选择<code>interpreter</code>, 选择本地安装的php脚本.</p>
+<p>  <img src="/images/debug/1.png" alt="xdebug interpreter"></p>
+</li>
+<li><p>如果有修改默认<code>xdebug_remote_port</code>, 修改默认phpstorm默认debug端口</p>
+<p>  <img src="/images/debug/2.png" alt="phpstrom default debug port"></p>
+</li>
+<li><p>添加默认服务地址</p>
+<p>  <img src="/images/debug/3.png" alt="default php host"></p>
+</li>
+<li><p>新建调试页面(一个服务地址下, 可以配置多个页面调试)</p>
+<p>  <img src="/images/debug/4.png" alt="create debug page"></p>
+</li>
+</ul>
+<ul>
+<li><p>在对应的php文件打上断点后, 点击debug按钮实现调试. 效果如</p>
+<p>  <img src="/images/debug/5.png" alt="OK"></p>
+<p>  <strong>这样就实现了phpweb应用的调试了, 不用var_dump($var);exit;调试了</strong></p>
+</li>
+</ul>
+<p>PS: 有问题欢迎拍砖, 本人亲测没有问题.</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/10/24/qccr-dinner/" class="next">NEXT</a></div><div data-thread-key="2016/10/31/phpstorm-debug/" data-title="phpstorm-debug" data-url="http://vvotm.github.io/2016/10/31/phpstorm-debug/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"superwm"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><div class="copyright"><p>© 2015 - 2016 <a href="http://vvotm.github.io">vvotm(luowen)</a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>
