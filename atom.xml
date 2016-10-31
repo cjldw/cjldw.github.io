@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://vvotm.github.io/"/>
-  <updated>2016-10-31T16:43:42.698Z</updated>
+  <updated>2016-10-31T16:49:14.891Z</updated>
   <id>http://vvotm.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://vvotm.github.io/2016/10/31/phpstorm-debug/"/>
     <id>http://vvotm.github.io/2016/10/31/phpstorm-debug/</id>
     <published>2016-10-31T15:59:31.000Z</published>
-    <updated>2016-10-31T16:43:42.698Z</updated>
+    <updated>2016-10-31T16:49:14.891Z</updated>
     
     <content type="html">&lt;p&gt;phpstorm 是一个php开发利器,本博客简单的描述如何使用phpstrom2016.2实现phpweb应用debug. 简单单个php脚本不做解释.&lt;br&gt;英文好的同学直接阅读&lt;a href=&quot;https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;官方文档&lt;/a&gt;会更加详细&lt;/p&gt;
 &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
@@ -59,7 +59,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;在对应的php文件打上断点后, 点击debug按钮实现调试. 效果如&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;在对应的php文件打上断点后, 点击debug按钮后, 会打开默认浏览器访问上一部配置的地址, 然后再回到phpstrom, php已经停止在断点处了. 之后慢慢调试咯. 效果如图&lt;/p&gt;
 &lt;p&gt;  &lt;img src=&quot;/images/debug/5.png&quot; alt=&quot;OK&quot;&gt;&lt;/p&gt;
 &lt;p&gt;  &lt;strong&gt;这样就实现了phpweb应用的调试了, 不用var_dump($var);exit;调试了&lt;/strong&gt;&lt;/p&gt;
 &lt;/li&gt;
@@ -761,7 +761,7 @@ bin  boot  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&quot;Centos-Box-安装lamp环境&quot;&gt;&lt;a href=&quot;#Centos-Box-安装lamp环境&quot; class=&quot;headerlink&quot; title=&quot;Centos Box 安装lamp环境&quot;&gt;&lt;/a&gt;Centos Box 安装lamp环境&lt;/h3&gt;&lt;blockquote&gt;
-&lt;p&gt;本案列使用 apache2.4, php5.6.12 mysql5.7 编译安装, 源文件都一打包好, 有需要可以找我要&lt;a href=&quot;&amp;#x6d;&amp;#97;&amp;#105;&amp;#x6c;&amp;#116;&amp;#111;&amp;#58;&amp;#108;&amp;#111;&amp;#111;&amp;#118;&amp;#105;&amp;#101;&amp;#x6e;&amp;#x40;&amp;#x31;&amp;#54;&amp;#x33;&amp;#46;&amp;#99;&amp;#111;&amp;#109;&quot;&gt;&amp;#108;&amp;#111;&amp;#111;&amp;#118;&amp;#105;&amp;#101;&amp;#x6e;&amp;#x40;&amp;#x31;&amp;#54;&amp;#x33;&amp;#46;&amp;#99;&amp;#111;&amp;#109;&lt;/a&gt;.  &lt;/p&gt;
+&lt;p&gt;本案列使用 apache2.4, php5.6.12 mysql5.7 编译安装, 源文件都一打包好, 有需要可以找我要&lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#58;&amp;#x6c;&amp;#111;&amp;#x6f;&amp;#x76;&amp;#105;&amp;#101;&amp;#110;&amp;#64;&amp;#49;&amp;#54;&amp;#x33;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d;&quot;&gt;&amp;#x6c;&amp;#111;&amp;#x6f;&amp;#x76;&amp;#105;&amp;#101;&amp;#110;&amp;#64;&amp;#49;&amp;#54;&amp;#x33;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d;&lt;/a&gt;.  &lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;默认所有服务安装到/usr/local/webserver目录下.  &lt;/p&gt;
