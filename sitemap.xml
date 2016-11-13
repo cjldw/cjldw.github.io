@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://vvotm.github.io/2016/11/13/%E5%90%88%E5%B9%B6%E5%A4%9A%E4%B8%AApromise%E5%AF%B9%E8%B1%A1/</loc>
+    
+    <lastmod>2016-11-13T03:30:15.824Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://vvotm.github.io/2016/11/11/%E4%B8%8D%E4%BD%BF%E7%94%A8ssl%E5%AE%9E%E7%8E%B0%E5%8A%A0%E5%AF%86%E7%99%BB%E5%85%A5/</loc>
     
     <lastmod>2016-11-11T16:45:09.575Z</lastmod>
@@ -51,14 +58,14 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2016/04/13/%E6%97%B6%E9%97%B4%E6%88%B3%E8%BD%AC%E6%97%A5%E6%9C%9F%EF%BC%8C%E6%97%A5%E6%9C%9F%E8%A3%85%E6%97%B6%E9%97%B4%E6%88%B3%E5%BF%AB%E9%80%9Ftempermonkey%E8%84%9A%E6%9C%AC/</loc>
+    <loc>http://vvotm.github.io/2016/09/10/%E7%AE%80%E5%8D%95%E7%9A%84mysql%E8%BF%87%E7%A8%8B%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E8%A1%8C%E7%B4%AF%E5%8A%A0/</loc>
     
     <lastmod>2016-10-08T03:29:43.187Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2016/09/10/%E7%AE%80%E5%8D%95%E7%9A%84mysql%E8%BF%87%E7%A8%8B%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E8%A1%8C%E7%B4%AF%E5%8A%A0/</loc>
+    <loc>http://vvotm.github.io/2016/04/13/%E6%97%B6%E9%97%B4%E6%88%B3%E8%BD%AC%E6%97%A5%E6%9C%9F%EF%BC%8C%E6%97%A5%E6%9C%9F%E8%A3%85%E6%97%B6%E9%97%B4%E6%88%B3%E5%BF%AB%E9%80%9Ftempermonkey%E8%84%9A%E6%9C%AC/</loc>
     
     <lastmod>2016-10-08T03:29:43.187Z</lastmod>
     
@@ -93,13 +100,6 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2016/09/09/%E4%BD%BF%E7%94%A8gitbook%E6%95%B4%E5%90%88github%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E6%96%87%E6%A1%A3/</loc>
-    
-    <lastmod>2016-10-08T03:29:43.184Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://vvotm.github.io/2016/05/09/vagrant%E6%90%AD%E5%BB%BAlamp%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</loc>
     
     <lastmod>2016-10-08T03:29:43.184Z</lastmod>
@@ -107,14 +107,21 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2016/09/25/python%E5%88%A0%E9%99%A4mysqlbinlog%E6%97%A5%E5%BF%97%E4%B8%AD%E7%9A%84%E5%88%A0%E9%99%A4%E8%AF%AD%E5%8F%A5%E5%AE%9E%E7%8E%B0/</loc>
+    <loc>http://vvotm.github.io/2016/09/09/%E4%BD%BF%E7%94%A8gitbook%E6%95%B4%E5%90%88github%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E6%96%87%E6%A1%A3/</loc>
+    
+    <lastmod>2016-10-08T03:29:43.184Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://vvotm.github.io/2015/07/26/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/</loc>
     
     <lastmod>2016-10-08T03:29:43.183Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/07/26/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/</loc>
+    <loc>http://vvotm.github.io/2016/09/25/python%E5%88%A0%E9%99%A4mysqlbinlog%E6%97%A5%E5%BF%97%E4%B8%AD%E7%9A%84%E5%88%A0%E9%99%A4%E8%AF%AD%E5%8F%A5%E5%AE%9E%E7%8E%B0/</loc>
     
     <lastmod>2016-10-08T03:29:43.183Z</lastmod>
     
@@ -163,14 +170,14 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2016/09/21/goodbye-%E5%8F%AF%E4%B9%90/</loc>
+    <loc>http://vvotm.github.io/2016/05/08/chrome-chromium%E6%8F%92%E4%BB%B6%E4%B9%8Bvimium%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</loc>
     
     <lastmod>2016-10-08T03:29:43.178Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2016/05/08/chrome-chromium%E6%8F%92%E4%BB%B6%E4%B9%8Bvimium%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</loc>
+    <loc>http://vvotm.github.io/2016/09/21/goodbye-%E5%8F%AF%E4%B9%90/</loc>
     
     <lastmod>2016-10-08T03:29:43.178Z</lastmod>
     
@@ -198,14 +205,14 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/12/25/PHP5-4-Trait-%E4%BD%BF%E7%94%A8/</loc>
+    <loc>http://vvotm.github.io/2015/12/22/MySQL%E5%8D%95%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B7%91%E5%A4%9A%E4%B8%AA%E5%AE%9E%E4%BE%8B%E5%AD%90/</loc>
     
     <lastmod>2016-10-08T03:29:43.176Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/12/22/MySQL%E5%8D%95%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B7%91%E5%A4%9A%E4%B8%AA%E5%AE%9E%E4%BE%8B%E5%AD%90/</loc>
+    <loc>http://vvotm.github.io/2015/12/25/PHP5-4-Trait-%E4%BD%BF%E7%94%A8/</loc>
     
     <lastmod>2016-10-08T03:29:43.176Z</lastmod>
     
@@ -219,14 +226,14 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/08/25/Knockoutjs-%E5%AE%9E%E7%8E%B0%E7%9C%81%E5%B8%82%E8%81%94%E5%8A%A8/</loc>
+    <loc>http://vvotm.github.io/2015/07/27/Haproxy-Configuration/</loc>
     
     <lastmod>2016-10-08T03:29:43.174Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/07/27/Haproxy-Configuration/</loc>
+    <loc>http://vvotm.github.io/2015/08/25/Knockoutjs-%E5%AE%9E%E7%8E%B0%E7%9C%81%E5%B8%82%E8%81%94%E5%8A%A8/</loc>
     
     <lastmod>2016-10-08T03:29:43.174Z</lastmod>
     
@@ -247,14 +254,14 @@
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/07/25/CentOS-Debian%E7%AD%89Linux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90-1/</loc>
+    <loc>http://vvotm.github.io/2015/09/14/CentOS-jemalloc%E5%BA%93%E7%BC%BA%E5%A4%B1%E9%97%AE%E9%A2%98/</loc>
     
     <lastmod>2016-10-08T03:29:43.167Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://vvotm.github.io/2015/09/14/CentOS-jemalloc%E5%BA%93%E7%BC%BA%E5%A4%B1%E9%97%AE%E9%A2%98/</loc>
+    <loc>http://vvotm.github.io/2015/07/25/CentOS-Debian%E7%AD%89Linux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90-1/</loc>
     
     <lastmod>2016-10-08T03:29:43.167Z</lastmod>
     
