@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://vvotm.github.io/"/>
-  <updated>2016-11-28T16:27:58.921Z</updated>
+  <updated>2016-11-28T16:32:48.074Z</updated>
   <id>http://vvotm.github.io/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="http://vvotm.github.io/2016/11/28/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/"/>
     <id>http://vvotm.github.io/2016/11/28/java动态代理/</id>
     <published>2016-11-28T15:13:20.000Z</published>
-    <updated>2016-11-28T16:27:58.921Z</updated>
+    <updated>2016-11-28T16:32:48.074Z</updated>
     
     <content type="html">&lt;p&gt;代理模式, 可以只提供方法, 实际操作交给被代理对象去完成, 好处是可以在不修改原来代码基础上新增功能, 也可以优化, 当然还有等等…&lt;br&gt;简单说下java的三中代理实现&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;h3 id=&quot;静态代理&quot;&gt;&lt;a href=&quot;#静态代理&quot; class=&quot;headerlink&quot; title=&quot;静态代理&quot;&gt;&lt;/a&gt;静态代理&lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;&lt;p&gt;JDK8的新特性, 接口中可以有方法体, 主要实现一个print方法&lt;/p&gt;
  &lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;package&lt;/span&gt; main.staticproxy;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;JDK8Tools&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;     &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(Object msg)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;         System.out.println(msg);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;     &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -69,7 +70,6 @@
     <summary type="html">
     
       &lt;p&gt;代理模式, 可以只提供方法, 实际操作交给被代理对象去完成, 好处是可以在不修改原来代码基础上新增功能, 也可以优化, 当然还有等等…&lt;br&gt;简单说下java的三中代理实现&lt;/p&gt;
-&lt;h3 id=&quot;静态代理&quot;&gt;&lt;a href=&quot;#静态代理&quot; class=&quot;headerlin
     
     </summary>
     
