@@ -2,8 +2,8 @@
 <span id="more"></span>
 
 <h2 id="原由"><a href="#原由" class="headerlink" title="原由"></a>原由</h2><p>有很长一段时间没有更新自己的博客了，发现原先的hexo版本已经更新很高的版本了，然后我的一砣安全漏洞需要修复。今天有空就更新一把了。</p>
-<h2 id="原先的更新方式"><a href="#原先的更新方式" class="headerlink" title="原先的更新方式"></a>原先的更新方式</h2><p>原先的方式是使用hexo的本地的策略从创建，到生成，到发布。 对应命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new post xxx <span class="comment"># 新建blog。</span></span><br><span class="line">$ vim _source/_post/xxx.md <span class="comment"># 编辑blog。</span></span><br><span class="line">$ hexo generate <span class="comment"># 生成静态文件。</span></span><br><span class="line">$ hexo deploy <span class="comment"># 发布到对应 username.github.io 仓库。</span></span><br></pre></td></tr></table></figure>
+<h2 id="原先的更新方式"><a href="#原先的更新方式" class="headerlink" title="原先的更新方式"></a>原先的更新方式</h2><p>原先的方式是使用<a target="_blank" rel="noopener" href="https://hexo.io/">hexo</a>的本地的策略从创建，到生成，到发布。 对应命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new post xxx <span class="comment"># 新建blog。</span></span><br><span class="line">$ vim _source/_post/xxx.md <span class="comment"># 编辑blog。</span></span><br><span class="line">$ hexo generate <span class="comment"># 生成静态文件。</span></span><br><span class="line">$ hexo deploy <span class="comment"># 发布到对应 loovien.github.io 仓库。</span></span><br></pre></td></tr></table></figure>
 
 <p>优点：</p>
 <ol>
@@ -13,9 +13,15 @@
 <ol>
 <li>本地需要要nodejs环境。</li>
 <li>本地需要安装项目依赖的npm包。</li>
-<li>需要有2个项目来支持，A: 源文件仓库。 B：github Pages 仓库（username.github.io）。</li>
+<li>需要有2个项目来支持，A: 源文件仓库(当前)。 B：github Pages 仓库（loovien.github.io），<code>hexo deploy</code> 就是将对应生成的静态文件发布到<code>loovien.github.io</code>项目上。</li>
 </ol>
-<h2 id="最新的方式（github-Actions）"><a href="#最新的方式（github-Actions）" class="headerlink" title="最新的方式（github Actions）"></a>最新的方式（github Actions）</h2><p>原理单纯的就使用hexo的骨架，在源码目录下上对应的博客（markdown文件）。然后提交到github仓库。使用github workflow 自动构建。</p>
+<h2 id="最新的方式（github-workflows）"><a href="#最新的方式（github-workflows）" class="headerlink" title="最新的方式（github workflows）"></a>最新的方式（github workflows）</h2><p>原理单纯的就使用hexo的骨架，在源码目录下上对应的博客（markdown文件）。然后提交到github仓库。使用github workflow 自动构建。</p>
+<p>解决：</p>
+<ol>
+<li>本地不依赖node环境， 专注写好markdown文件即可。</li>
+<li>优化项目， 只需要一个项目（loovien.github.io), master分支放源文件，gh-pages 放对应生成的静态文件。</li>
+<li>优化发布步骤，写好的博客，推送远程即可。</li>
+</ol>
 <p><a target="_blank" rel="noopener" href="https://hexo.io/docs/gitlab-pages">官方文档</a></p>
 <ol>
 <li>克隆hexo博客系统的骨架, 可以按这个项目在目录创建对应的文件目录。（.git, .github 目录除外)。</li>
@@ -30,17 +36,17 @@
 <ol start="3">
 <li>初始化当前目录为自己的博客项目, 添加远程仓库地址。</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> blog-code</span><br><span class="line">$ git init</span><br><span class="line">$ git remote add origin git@github.com:username/username.github.io.git</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> blog-code</span><br><span class="line">$ git init</span><br><span class="line">$ git remote add origin git@github.com:loovien/loovien.github.io.git</span><br></pre></td></tr></table></figure>
 
 <ol start="4">
 <li><p>创建github workflows 流程。</p>
 <ul>
-<li>项目下创建目录<code>.github/workflows/</code></li>
-<li>新建workflow脚本（类似.gitlab-ci.yml)</li>
+<li>项目下创建目录<code>.github/workflows/</code>同（<code>_source</code>目录同级）</li>
+<li>新建workflow脚本（类似.gitlab-ci.yml)， 名字随意（如auto-build.yml)</li>
 </ul>
 </li>
 </ol>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">document-build</span></span><br><span class="line"><span class="attr">on:</span> [<span class="string">push</span>]</span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">use-hexo-build-website:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span> <span class="comment"># 克隆代码</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/setup-node@v2</span> <span class="comment"># 使用node环境</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">&quot;14&quot;</span> <span class="comment"># node 版本</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span> <span class="comment"># 安装hexo-ci</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span> <span class="comment"># 安装依赖</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">npm</span> <span class="string">run</span> <span class="string">build</span> <span class="comment"># 构建项目</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span> <span class="comment"># 使用action-gh-pages 发布项目</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.token</span> <span class="string">&#125;&#125;</span> <span class="comment"># github登录TOKEN</span></span><br><span class="line">          <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br><span class="line">          <span class="attr">publish_branch:</span> <span class="string">gh-pages</span> <span class="comment"># 发布到gh-pages分支。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># auto-build.yml</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">document-build</span></span><br><span class="line"><span class="attr">on:</span> [<span class="string">push</span>]</span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">use-hexo-build-website:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span> <span class="comment"># 克隆代码</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/setup-node@v2</span> <span class="comment"># 使用node环境</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">&quot;14&quot;</span> <span class="comment"># node 版本</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span> <span class="comment"># 安装hexo-ci</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span> <span class="comment"># 安装依赖</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">npm</span> <span class="string">run</span> <span class="string">build</span> <span class="comment"># 构建项目</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span> <span class="comment"># 使用action-gh-pages 发布项目</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.token</span> <span class="string">&#125;&#125;</span> <span class="comment"># github登录TOKEN</span></span><br><span class="line">          <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br><span class="line">          <span class="attr">publish_branch:</span> <span class="string">gh-pages</span> <span class="comment"># 发布到gh-pages分支。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>PS: github私有仓库发布需要有token，<a target="_blank" rel="noopener" href="https://github.com/settings/tokens">创建地址</a>, 项目workflows添加secrets <code>https://github.com/loovien/yourname.github.io/settings/secrets/actions</code>，对应替换地址中的yourname. 添加好了后（TOKEN是添加好的名称），$ 就可以使用它的值了。</p>
 <p><a target="_blank" rel="noopener" href="https://docs.github.com/en/actions/learn-github-actions">参考文档</a></p>
@@ -54,7 +60,9 @@
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git add . &amp;&amp; git commit . -m <span class="string">&quot;deploy new BLOG&quot;</span></span><br><span class="line">$ git push</span><br></pre></td></tr></table></figure>
 
-
+<ol start="7">
+<li>最后设置下项目pages对应gh-pages分支。 <code>https://github.com/loovien/loovien.github.io/settings/secrets/actions</code>， 访问<a href="https://loovien.github.io/">blog地址</a>。</li>
+</ol>
 </div></article></div></section><footer><div class="paginator"><a class="next" href="/2020/08/29/%E4%BD%BF%E7%94%A8%E7%8C%B4%E6%B2%B9%E6%8F%92%E4%BB%B6%E7%9C%8Bvip%E7%94%B5%E5%BD%B1/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
 var disqus_identifier = '2022/01/14/来个markdown出个博客系统/';
 var disqus_title = '来个markdown出个博客系统';
