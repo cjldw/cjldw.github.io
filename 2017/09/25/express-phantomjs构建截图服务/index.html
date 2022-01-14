@@ -1,20 +1,29 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> express+phantomjs构建截图服务 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="express, phatomjs构建截图服务"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">express+phantomjs构建截图服务</h1><div class="post-info">Sep 25, 2017</div><div class="post-content"><p>最近有个需求需要把长的网页截图后, 用于微信分享。 google了一番, 发现了集中解决方案。</p>
+<ul>
+<li>使用python的<code>selenium</code>库实现</li>
+<li>使用<code>CutyCapt</code>实现截图</li>
+<li>使用nodejs中的<code>pagers</code>或<code>webshot</code>实现</li>
+</ul>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>python的<code>selenium</code>库是基于浏览器的, 线上服务器, 那里来的浏览器, 要知道去线上服务器装一个浏览器有多么复杂啊. (X服务, QT, 巴拉巴拉省略好几百个依赖)， 太吓人了， 果断放弃</p>
+<p><code>CutyCapt</code>不需要装浏览器, 但它的原理是将页面转成PDF在有PDF转成图片， 我在想页面边PDF色彩会不会丢失, 会不会出现字体样式的问题。 没试， 还是放弃了。依赖的东西也不少。</p>
+<p>nodejs<code>webshot2</code> 一个简单的页面截图, 依赖少的可怜, 装好nodejs就可以了, 直接抓去页面, 或直接渲染html, 截图。一步到位, 毫无悬念, 就它了。</p>
+<h3 id="展示下效果图"><a href="#展示下效果图" class="headerlink" title="展示下效果图"></a>展示下效果图</h3><ol>
+<li><p>截图传递参数详情参见<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/webshot2">webshot2</a></p>
+<p> <img src="/images/webshot/1.jpg" alt="展示1"></p>
+</li>
+<li><p>截图后的效果</p>
+<p> <img src="/images/webshot/2.jpg" alt="展示2"></p>
+</li>
+</ol>
+<p>由于是后台业务, 无需考虑大并发业务场景。<a target="_blank" rel="noopener" href="https://github.com/vvotm/webshot">代码</a></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2017/10/19/golang%E6%80%8E%E4%B9%88%E9%99%90%E5%88%B6goroutine%E6%95%B0%E9%87%8F/">PREV</a><a class="next" href="/2017/09/22/bash-keymap/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2017/09/25/express-phantomjs构建截图服务/';
+var disqus_title = 'express+phantomjs构建截图服务';
+var disqus_url = 'https://loovien.github.io/2017/09/25/express-phantomjs构建截图服务/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

@@ -1,20 +1,233 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> php图片水印类 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="php图片水印类 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">php图片水印类</h1><div class="post-info">Jun 25, 2015</div><div class="post-content"><p>php中图片水印处理类</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<div class="cnblogs_code">
+<pre>&lt;?<span style="color: #000000;">php
+</span><span style="color: #0000ff;">class</span><span style="color: #000000;"> Image {
+    </span><span style="color: #0000ff;">private</span> <span style="color: #800080;">$path</span><span style="color: #000000;">;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">构造方法用来对图片所在位置进行初使化</span>
+    <span style="color: #0000ff;">function</span> __construct(<span style="color: #800080;">$path</span>="./"<span style="color: #000000;">){
+        </span><span style="color: #800080;">$this</span>-&gt;path=<span style="color: #008080;">rtrim</span>(<span style="color: #800080;">$path</span>, "/")."/"<span style="color: #000000;">;
+        </span><span style="color: #800080;">$this</span> -&gt; path = ''<span style="color: #000000;">;
+    }
+    </span><span style="color: #008000;">/*</span><span style="color: #008000;"> 对图片进行缩放
+     *
+     * 参数$name: 是需要处理的图片名称
+     * 参数$width:是缩放后的宽度
+     * 参数$height:是缩放后的高度
+     * 参数$qz: 是新图片的名称前缀
+     * 返回值:就是缩放后的图片名称，失败则返回false
+     *
+     </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">function</span> thumb(<span style="color: #800080;">$name</span>, <span style="color: #800080;">$width</span>, <span style="color: #800080;">$height</span>, <span style="color: #800080;">$qz</span>="th_"<span style="color: #000000;">){
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">获取图片信息</span>
+        <span style="color: #800080;">$imgInfo</span>=<span style="color: #800080;">$this</span>-&gt;getInfo(<span style="color: #800080;">$name</span>); <span style="color: #008000;">//</span><span style="color: #008000;">图片的宽度，高度，类型
+        //获取图片资源, 各种类型的图片都可以创建资源 jpg, gif, png</span>
+        <span style="color: #800080;">$srcImg</span>=<span style="color: #800080;">$this</span>-&gt;getImg(<span style="color: #800080;">$name</span>, <span style="color: #800080;">$imgInfo</span><span style="color: #000000;">);
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">获取计算图片等比例之后的大小, $size["width"], $size["height"]</span>
+        <span style="color: #800080;">$size</span>=<span style="color: #800080;">$this</span>-&gt;getNewSize(<span style="color: #800080;">$name</span>, <span style="color: #800080;">$width</span>, <span style="color: #800080;">$height</span>, <span style="color: #800080;">$imgInfo</span><span style="color: #000000;">);
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">获取新的图片资源, 处理一下gif透明背景</span>
+        <span style="color: #800080;">$newImg</span>=<span style="color: #800080;">$this</span>-&gt;kidOfImage(<span style="color: #800080;">$srcImg</span>, <span style="color: #800080;">$size</span>, <span style="color: #800080;">$imgInfo</span><span style="color: #000000;">);
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">另存为一个新的图片，返回新的缩放后的图片名称    </span>
+        <span style="color: #0000ff;">return</span> <span style="color: #800080;">$this</span>-&gt;createNewImage(<span style="color: #800080;">$newImg</span>, <span style="color: #800080;">$qz</span>.<span style="color: #800080;">$name</span>, <span style="color: #800080;">$imgInfo</span><span style="color: #000000;">);    
+    }
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+<pre><code>&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; createNewImage(&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$newName&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;switch&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;type&quot;&lt;span style=&quot;color: #000000;&quot;&gt;])&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 1:&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;gif&lt;/span&gt;
+        &lt;span style=&quot;color: #008080;&quot;&gt;Header&lt;/span&gt;(&quot;Content-type: image/gif&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$result&lt;/span&gt;=imageGif(&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 2:&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;jpg&lt;/span&gt;
+        &lt;span style=&quot;color: #008080;&quot;&gt;Header&lt;/span&gt;(&quot;Content-type: image/jpg&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$result&lt;/span&gt;=imageJPEG(&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 3:&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;png&lt;/span&gt;
+        &lt;span style=&quot;color: #008080;&quot;&gt;Header&lt;/span&gt;(&quot;Content-type: image/png&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$return&lt;/span&gt;=imagepng(&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &#125;
+    imagedestroy(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$newName&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+&#125;
 
-block container
-    include mixins/post
-    +post(page)
+&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; kidOfImage(&lt;span style=&quot;color: #800080;&quot;&gt;$srcImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;=imagecreatetruecolor(&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]);
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$otsc&lt;/span&gt;=imagecolortransparent(&lt;span style=&quot;color: #800080;&quot;&gt;$srcImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
 
-block copyright
-    include partial/copyright
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$otsc&lt;/span&gt; &amp;gt;=0 &amp;amp;&amp;amp; &lt;span style=&quot;color: #800080;&quot;&gt;$otsc&lt;/span&gt; &amp;lt;= imagecolorstotal(&lt;span style=&quot;color: #800080;&quot;&gt;$srcImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;))&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$tran&lt;/span&gt;=imagecolorsforindex(&lt;span style=&quot;color: #800080;&quot;&gt;$srcImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$otsc&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$newt&lt;/span&gt;=imagecolorallocate(&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$tran&lt;/span&gt;[&quot;red&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$tran&lt;/span&gt;[&quot;green&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$tran&lt;/span&gt;[&quot;blue&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]);
+
+        imagefill(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;, 0, 0, &lt;span style=&quot;color: #800080;&quot;&gt;$newt&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+        imagecolortransparent(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$newt&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+    &#125;
+
+    imagecopyresized(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$srcImg&lt;/span&gt;, 0, 0, 0, 0, &lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;width&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]);
+
+    imagedestroy(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$srcImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$newImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+&#125;
+
+&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; getNewSize(&lt;span style=&quot;color: #800080;&quot;&gt;$name&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$width&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$height&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+
+    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;缩放的宽度如果比原图小才重新设置宽度&lt;/span&gt;
+    &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$width&lt;/span&gt; &amp;lt; &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;])&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$width&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &#125;
+    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;缩放的高度如果比原图小才重新设置高度&lt;/span&gt;
+    &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$height&lt;/span&gt; &amp;lt; &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;])&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$height&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &#125;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;图片等比例缩放的算法&lt;/span&gt;
+    &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;width&quot;]*&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;] &amp;gt; &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;height&quot;] * &lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;])&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;]=&lt;span style=&quot;color: #008080;&quot;&gt;round&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;height&quot;]*&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;]/&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]);
+    &#125;&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;else&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;width&quot;]=&lt;span style=&quot;color: #008080;&quot;&gt;round&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;width&quot;]*&lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;[&quot;height&quot;]/&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]);
+    &#125;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$size&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+
+&#125;
+
+&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; getInfo(&lt;span style=&quot;color: #800080;&quot;&gt;$name&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$data&lt;/span&gt;=&lt;span style=&quot;color: #008080;&quot;&gt;getImageSize&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;path.&lt;span style=&quot;color: #800080;&quot;&gt;$name&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$imageInfo&lt;/span&gt;[&quot;width&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$data&lt;/span&gt;[0&lt;span style=&quot;color: #000000;&quot;&gt;];
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$imageInfo&lt;/span&gt;[&quot;height&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$data&lt;/span&gt;[1&lt;span style=&quot;color: #000000;&quot;&gt;];
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$imageInfo&lt;/span&gt;[&quot;type&quot;]=&lt;span style=&quot;color: #800080;&quot;&gt;$data&lt;/span&gt;[2&lt;span style=&quot;color: #000000;&quot;&gt;];
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$imageInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+&#125;
+
+&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; getImg(&lt;span style=&quot;color: #800080;&quot;&gt;$name&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$srcPic&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;path.&lt;span style=&quot;color: #800080;&quot;&gt;$name&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;switch&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$imgInfo&lt;/span&gt;[&quot;type&quot;&lt;span style=&quot;color: #000000;&quot;&gt;])&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 1: &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;gif&lt;/span&gt;
+        &lt;span style=&quot;color: #800080;&quot;&gt;$img&lt;/span&gt;=imagecreatefromgif(&lt;span style=&quot;color: #800080;&quot;&gt;$srcPic&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 2: &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;jpg&lt;/span&gt;
+        &lt;span style=&quot;color: #800080;&quot;&gt;$img&lt;/span&gt;=imageCreatefromjpeg(&lt;span style=&quot;color: #800080;&quot;&gt;$srcPic&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 3: &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;png&lt;/span&gt;
+        &lt;span style=&quot;color: #800080;&quot;&gt;$img&lt;/span&gt;=imageCreatefrompng(&lt;span style=&quot;color: #800080;&quot;&gt;$srcPic&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;default&lt;/span&gt;:
+        &lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;false&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+
+    &#125;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$img&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+&#125;
+&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 功能：为图片加水印图片
+ * 参数$groundName: 背景图片，即需要加水印的图片
+ * 参数$waterName: 水钱图片
+ * 参数#aterPost：水印位置， 10种状态， 
+ *  0为随机位置
+ *
+ *  1\. 为顶端居左  2\. 为顶端居中  3 为顶端居右
+ *  4  为中部居左  5\. 为中部居中  6 为中部居右
+ *  7 . 为底端居左 8\. 为底端居中， 9\. 为底端居右
+ *
+ * 参数$qz : 是加水印后的图片名称前缀
+ * 返回值：就是处理后图片的名称
+ *
+ &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
+&lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; waterMark(&lt;span style=&quot;color: #800080;&quot;&gt;$groundName&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterName&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterPos&lt;/span&gt;=0, &lt;span style=&quot;color: #800080;&quot;&gt;$qz&lt;/span&gt;=&quot;wa_&quot;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;getInfo(&lt;span style=&quot;color: #800080;&quot;&gt;$groundName&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;getInfo(&lt;span style=&quot;color: #800080;&quot;&gt;$waterName&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;水印的位置&lt;/span&gt;
+    &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt;(!&lt;span style=&quot;color: #800080;&quot;&gt;$pos&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;position(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterPos&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;))&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &quot;Picture too small!&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &#125;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;getImg(&lt;span style=&quot;color: #800080;&quot;&gt;$groundName&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$waterImg&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;getImg(&lt;span style=&quot;color: #800080;&quot;&gt;$waterName&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;copyImage(&lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$pos&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$this&lt;/span&gt;-&amp;gt;createNewImage(&lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$qz&lt;/span&gt;.&lt;span style=&quot;color: #800080;&quot;&gt;$groundName&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+&#125;
+
+&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; copyImage(&lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$pos&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    imagecopy(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterImg&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$pos&lt;/span&gt;[&quot;posX&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$pos&lt;/span&gt;[&quot;posY&quot;], 0, 0, &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;], &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]);
+    imagedestroy(&lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$waterImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #800080;&quot;&gt;$groundImg&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+&#125;
+
+&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;function&lt;/span&gt; position(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;, &lt;span style=&quot;color: #800080;&quot;&gt;$waterPos&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;需要背景比水印图片大&lt;/span&gt;
+    &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt;((&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]&amp;lt; &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;]) ||(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;] &amp;lt; &lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]))&#123;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;false&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &#125;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;switch&lt;/span&gt;(&lt;span style=&quot;color: #800080;&quot;&gt;$waterPos&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)&#123;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 1:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=0&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=0&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 2:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;])/2&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=0&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 3:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=0&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 4:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=0&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;]) /2&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 5:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;])/2&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;]) /2&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 6:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;]) /2&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 7:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=0&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 8:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=(&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;])/2&lt;span style=&quot;color: #000000;&quot;&gt;;
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 9:
+        &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+        &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;];
+        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;case&lt;/span&gt; 0:
+    &lt;span style=&quot;color: #0000ff;&quot;&gt;default&lt;/span&gt;:
+    &lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;=&lt;span style=&quot;color: #008080;&quot;&gt;rand&lt;/span&gt;(0, (&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;width&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;width&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]));
+    &lt;/span&gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;=&lt;span style=&quot;color: #008080;&quot;&gt;rand&lt;/span&gt;(0, (&lt;span style=&quot;color: #800080;&quot;&gt;$groundInfo&lt;/span&gt;[&quot;height&quot;]-&lt;span style=&quot;color: #800080;&quot;&gt;$waterInfo&lt;/span&gt;[&quot;height&quot;&lt;span style=&quot;color: #000000;&quot;&gt;]));
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;break&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
+    &#125;
+
+    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;array&lt;/span&gt;(&quot;posX&quot;=&amp;gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posX&lt;/span&gt;, &quot;posY&quot;=&amp;gt;&lt;span style=&quot;color: #800080;&quot;&gt;$posY&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+&#125;
+</code></pre>
+<p>}</span></pre></p>
+</div>
+
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2015/06/30/linux%E4%B8%8Bnginx-php-fpm%E8%BF%90%E8%A1%8C%E7%94%A8%E6%88%B7%E4%BB%A5%E5%8F%8A%E8%B5%84%E6%BA%90%E7%9B%AE%E5%BD%95%E7%9A%84%E6%9D%83%E9%99%90/">PREV</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2015/06/25/php图片水印类/';
+var disqus_title = 'php图片水印类';
+var disqus_url = 'https://loovien.github.io/2015/06/25/php图片水印类/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

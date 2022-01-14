@@ -1,20 +1,52 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> apache2.4反向代理配置 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="apache2.4反向代理实现"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">apache2.4反向代理配置</h1><div class="post-info">Jun 1, 2017</div><div class="post-content"><p>今天是儿童节, 愿天下所有的宝宝都健康快乐的成长(我也是宝宝😄)….</p>
+<p>回到正题: 假设你有多个网站, 但只有一个域名, 如何实现访问2个对应网站. 1, 通过方向代理实现了.</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h2 id="场景再现"><a href="#场景再现" class="headerlink" title="场景再现"></a>场景再现</h2><ol>
+<li><p>话不多说, 上一张图, 快速理解</p>
+<p> <img src="/images/httproxy/reverse_proxy.png" alt="http reverse proxy"></p>
+</li>
+</ol>
+<ol start="2">
+<li><p>通过访问对应的路径, http代理过去</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Site: http://youdomain.com</span><br><span class="line">WebSite1: http://youdomain.com/app1 http://localhost/app1</span><br><span class="line">WebSite2: http://youdomain.com/app2 http://localhost/app2</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="apache2-4配置"><a href="#apache2-4配置" class="headerlink" title="apache2.4配置"></a>apache2.4配置</h2><ol start="0">
+<li><p> 开启<code>mod_proxy</code> <code>mod_proxy_http.so</code></p>
+</li>
+<li><p>编辑<code>http-vhost.conf</code></p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ProxyPreserveHost On</span><br><span class="line">ProxyPass /app1 http://127.0.0.1:8888/app1</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="nginx1-x配置"><a href="#nginx1-x配置" class="headerlink" title="nginx1.x配置"></a>nginx1.x配置</h2><ol>
+<li><p>编辑<code>nginx.conf</code> 或对应vhost.conf文件</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location /app1 &#123;</span><br><span class="line">    proxy_pass http://127.0.0.1:8888</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="创建8888端口监听http服务"><a href="#创建8888端口监听http服务" class="headerlink" title="创建8888端口监听http服务"></a>创建8888端口监听http服务</h2><ol>
+<li><p>用golang快速搭建, 也可以使用nodejs, 都很方便</p>
+ <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">UserInfo</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    fmt.Fprintf(w, <span class="string">&quot;Hello, I love, %s&quot;</span>, r.URL.Path[<span class="number">1</span>:])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    http.HandleFunc(<span class="string">&quot;/app1/hello&quot;</span>, UserInfo)</span><br><span class="line">    http.ListenAndServe(<span class="string">&quot;:8888&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><ol>
+<li>通过访问’<a target="_blank" rel="noopener" href="http://youdomain.com/app1/hello&#39;">http://youdomain.com/app1/hello&#39;</a>, 会对应返回 Hello I love /app1/hello</li>
+</ol>
+<h2 id="fastcgi代理-杂谈"><a href="#fastcgi代理-杂谈" class="headerlink" title="fastcgi代理(杂谈)"></a>fastcgi代理(杂谈)</h2><h3 id="apache-fastcgi-php-fpm处理php脚本语言"><a href="#apache-fastcgi-php-fpm处理php脚本语言" class="headerlink" title="apache fastcgi+php-fpm处理php脚本语言"></a>apache fastcgi+php-fpm处理php脚本语言</h3><ol>
+<li><p>这个模式很少用, apache下使用php, 编译php时候, 指定<code>--with-apxs2</code> 直接编译mod_php5模块.性能, 配置各方面都方便.<br>尽作了解吧</p>
+</li>
+<li><p>配置, 确保<code>mod_proxy.so</code>, <code>mod_proxy_fcgi.so</code>模块已经加载, document_root注意cgi变量</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ProxyPassMatch <span class="string">&quot;^/app1/.*\.php(/.*)?$&quot;</span> <span class="string">&quot;fcgi://localhost:9000/d:/workspace/&quot;</span> enablereuse=on</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="nginx-fastcgi代理php-fpm处理php脚本语言"><a href="#nginx-fastcgi代理php-fpm处理php脚本语言" class="headerlink" title="nginx fastcgi代理php-fpm处理php脚本语言"></a>nginx fastcgi代理php-fpm处理php脚本语言</h3><ol>
+<li><p>nginx没有模块处理php, 只能通过php-fpm或php-cgi.exe处理php脚本文件</p>
+</li>
+<li><p>基本配置信息</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location ~ \.php$ &#123;</span><br><span class="line">    fastcgi_pass   127.0.0.1:9000;</span><br><span class="line">    fastcgi_index  index.php;</span><br><span class="line">    fastcgi_param  SCRIPT_FILENAME  $document_root<span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">    include        fastcgi_params;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>http代理和fastcgi代理是2个完全不同的机制, 注意区分</strong><br><strong>欢迎拍砖😄</strong></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2017/06/03/golang%E6%A8%A1%E6%8B%9F%E6%8E%A5%E5%8A%9B%E8%B5%9B/">PREV</a><a class="next" href="/2017/05/14/centos7%E7%BC%96%E8%AF%91apache2-4-php5-6-mysql5-7/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2017/06/01/apache-reverse-proxy/';
+var disqus_title = 'apache2.4反向代理配置';
+var disqus_url = 'https://loovien.github.io/2017/06/01/apache-reverse-proxy/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

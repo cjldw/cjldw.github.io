@@ -1,20 +1,22 @@
-extends partial/layout
-
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MySQL InnoDB存储引擎外键约束 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="MySQL InnoDB存储引擎外键约束 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">MySQL InnoDB存储引擎外键约束</h1><div class="post-info">Aug 14, 2015</div><div class="post-content"><h2 id="InnoDB存储引擎-外键约束"><a href="#InnoDB存储引擎-外键约束" class="headerlink" title="InnoDB存储引擎 外键约束"></a>InnoDB存储引擎 外键约束</h2><p>语法:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> [TEMPORARY] <span class="keyword">TABLE</span> [IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] tbl_name [<span class="keyword">CONSTRAINT</span> [symbol]] <span class="keyword">FOREIGN</span> KEY [index_name] (index_col_name,...)</span><br><span class="line"><span class="keyword">REFERENCES</span> tbl_name(index_col_name,...) <span class="keyword">ON</span> <span class="keyword">DELETE</span>  [RESTRICT <span class="operator">|</span> CASCADE <span class="operator">|</span> <span class="keyword">SET</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NO</span> ACTION] <span class="keyword">ON</span> UPDATE [RESTRICT <span class="operator">|</span> CASCADE <span class="operator">|</span> <span class="keyword">SET</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NO</span> ACTION]</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.6/en/create-table-foreign-keys.html">官方文档参考</a></p>
+<p>本文讨论 ON {DELETE , UPDATE} [RESTRICT | CASCADE | SET DEFAULT | NO ACTION | SET NULL]</p>
+<ul>
+<li>ON DELETE | UPDATE 表示父表在发生删除, 更新事件的时候,子表对应的操作</li>
+<li>RESTRICT 表示当子表有数据关联到父表的数据时候, 不能删除父表的数据</li>
+<li>CASCADE  表示删除或更新父表数据的时候, 对应也会相应跟删除或更新子表的数据. Note: 到5.6版本为止, 还不支持事务</li>
+<li>SET DEFAULT MySQL占不支持InnoDB表</li>
+<li>NO ACTION MySQL中的NO ACTION可理解为RESTRICT, 有些数据库延迟检查功能, MySQL是即时检查,所以和RESTRICT一样的</li>
+<li>SET NULL 父表中的删除或更新数据, 子表中的有关联约束的字段设置为NULL</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.6/en/create-table-foreign-keys.html">官方参考文档</a></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2015/08/24/Knockoutjs-%E5%AE%9E%E7%8E%B0%E7%9C%81%E5%B8%82%E8%81%94%E5%8A%A8/">PREV</a><a class="next" href="/2015/07/27/Haproxy-Configuration/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2015/08/14/MySQL-InnoDB存储引擎外键约束/';
+var disqus_title = 'MySQL InnoDB存储引擎外键约束';
+var disqus_url = 'https://loovien.github.io/2015/08/14/MySQL-InnoDB存储引擎外键约束/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

@@ -1,20 +1,23 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> redis数据迁移 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="redis数据迁移 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">redis数据迁移</h1><div class="post-info">Jul 26, 2015</div><div class="post-content"><p>开发往往需要处理redis中的key, 虽然有redis-desktop-manager软件很好用, 但知道点命令, 可以在terminal执行还是有必要的。<br>今天将几个简单的命令。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h2 id="将数据从本地db1迁移到db2中"><a href="#将数据从本地db1迁移到db2中" class="headerlink" title="将数据从本地db1迁移到db2中"></a>将数据从本地db1迁移到db2中</h2><p>很遗憾,redis只有<a target="_blank" rel="noopener" href="http://redis.io/commands/move">MOVE</a>命令,模式: MOVE KEY(需要移动的key) DB(到目标库中),只能单个键值移动,无法批量移动, 实现需要shell脚本</p>
+<pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -n 1 keys <span class="string">&#x27;*&#x27;</span> | xargs -I <span class="string">&#x27;&#123;&#125;&#x27;</span> redis-cli -n 1 move <span class="string">&#x27;&#123;&#125;&#x27;</span> 2</span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>命令解析</p>
+<ul>
+<li>redis-cli -n 1 keys ‘*‘ 表示获取db1中所有的keys</li>
+<li>xargs -I ‘{}’ 表示讲上部操作的结果作为参数,保存在’{}’中, 在执行移动命令: redis-cli -n 1 move ‘{}’ 2 </li>
+</ul>
+<h2 id="将数据从本地服务器迁移到另外一台服务器上"><a href="#将数据从本地服务器迁移到另外一台服务器上" class="headerlink" title="将数据从本地服务器迁移到另外一台服务器上"></a>将数据从本地服务器迁移到另外一台服务器上</h2><p>很遗憾,也是没有批量处理,只有<a target="_blank" rel="noopener" href="http://redis.io/commands/migrate">MIGRATE</a>命令, MIGRATE HOST(目标主机) PORT(目标端口) KEY(需要移动的key) DISTINATION_DB(目标库中) [COPY(拷贝本地数据,不删除)| REPLACE(覆盖目的主机上的键值) | 不填就等于复制本地后在删除本地数据 ] 只能单个移动,实现</p>
+<pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -n 1 keys <span class="string">&#x27;*&#x27;</span> | grep regex | xargs -I <span class="string">&#x27;&#123;&#125;&#x27;</span> redis-cli -n 1 migrate 192.168.1.100 11211 <span class="string">&#x27;&#123;&#125;&#x27;</span> 2 COPY</span><br></pre></td></tr></table></figure>
+</code></pre>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2015/07/27/Haproxy-Configuration/">PREV</a><a class="next" href="/2015/07/25/CentOS-%E6%97%A0%E4%BA%BA%E5%80%BC%E5%AE%88%E5%AE%89%E8%A3%85-ftp%E6%A8%A1%E5%BC%8F/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2015/07/25/redis数据迁移/';
+var disqus_title = 'redis数据迁移';
+var disqus_url = 'https://loovien.github.io/2015/07/25/redis数据迁移/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

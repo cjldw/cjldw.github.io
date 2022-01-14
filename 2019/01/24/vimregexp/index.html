@@ -1,20 +1,33 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> vim搜索中的正则表达式 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="vim搜索中的正则表达式"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">vim搜索中的正则表达式</h1><div class="post-info">Jan 24, 2019</div><div class="post-content"><p>最近使用vim的搜索替换， 发现只是不够用，特意学习了下。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<h3 id="vim中有个·magic·的东西"><a href="#vim中有个·magic·的东西" class="headerlink" title="vim中有个·magic·的东西"></a>vim中有个·magic·的东西</h3><p>当然快速查看帮助： <code>help magic</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">magic (\m)：除了$ . * ^ 之外其他元字符都要加反斜杠。</span><br><span class="line">nomagic (\M)：除了 $ ^ 之外其他元字符都要加反斜杠。</span><br><span class="line">very magic (\v)：都必须加上反斜杠</span><br><span class="line">very nomagic (\V)：都不加反斜杠</span><br></pre></td></tr></table></figure>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+<p>help中拿过来的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$       $        $         \$        匹配行尾</span><br><span class="line">.       .        \.         \.        匹配任何字符</span><br><span class="line">*       *        \*         \*        前面匹配原的任意次重复</span><br><span class="line">()       \(\)     \(\)     \(\)    组成为单个匹配原</span><br><span class="line">|       \|        \|         \|        分隔可选分支</span><br><span class="line">\a       \a        \a         \a        字母字符</span><br><span class="line">\\       \\        \\         \\        反斜杠 (按本义)</span><br><span class="line">\.       \.        .         .        英文句号 (按本义)</span><br><span class="line">\&#123;       &#123;        &#123;         &#123;        <span class="string">&#x27;&#123;&#x27;</span>  (按本义)</span><br><span class="line">a       a        a         a        <span class="string">&#x27;a&#x27;</span>  (按本义)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-block container
-    include mixins/post
-    +post(page)
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+<p>默认设置的 <code>magic</code></p>
+<h3 id="一些常用的量词，-元字符"><a href="#一些常用的量词，-元字符" class="headerlink" title="一些常用的量词， 元字符"></a>一些常用的量词， 元字符</h3><p>这些量词，元字符需要自己记下。没办法，👐</p>
+<p>量词：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">*  匹配0个或多个(匹配优先)</span><br><span class="line">\+ 匹配1个或多个(匹配优先)</span><br><span class="line">\?或\= 0个或1个(匹配优先)，\?不能在 ? 命令（逆向查找）中使用</span><br><span class="line">\&#123;n,m&#125; 匹配n个到m个(匹配优先),如\d&#123;1, 3&#125;可以匹配1到3个数字,类似1, 12, 123</span><br><span class="line">\&#123;n,&#125; 最少n个(匹配优先)</span><br><span class="line">\&#123;,m&#125; 最多m个(匹配优先</span><br><span class="line">\&#123;n&#125; 恰好n个</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-block copyright
-    include partial/copyright
+<p>元字符：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">*  匹配任意一个字符</span><br><span class="line">[abc] 匹配方括号中的1个字</span><br><span class="line">[a-zA-Z0-9] 匹配所有大小写字母和数字</span><br><span class="line">[^abc] 不匹配方括号中字符</span><br><span class="line">\d 匹配数字 [0-9] </span><br><span class="line">\D 匹配非数字 [^0-9] </span><br><span class="line">\x 匹配16进制字符[0-9A-Fa-f] </span><br><span class="line">\w 匹配单个字符[a-zA-Z0-9] </span><br><span class="line">\W 匹配非单个字符 [^a-zA-Z0-9] </span><br><span class="line">\t 下写字符 [a-z] </span><br><span class="line">\L 非小写字符[^a-z] </span><br><span class="line">\u 大写字符 [A-Z]</span><br><span class="line">\U 非大写的字符[^A-Z]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="一些实用的例子"><a href="#一些实用的例子" class="headerlink" title="一些实用的例子"></a>一些实用的例子</h3><p>查找替换 <code>:%s/luo/wen/g</code> 全局把luo替换成wen <code>:%s/luo/wen/gc</code> 替换前每次询问</p>
+<p>反向应用demo <code>:%s/\(luo\) or \(wen\)/\2 or \1/</code> 将luo 和wen 相互交换</p>
+<p>贪婪和非贪婪</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">demo: luowenoh</span><br><span class="line"></span><br><span class="line">`:%s/\(l.\&#123;-&#125;o\)/hello(\1)/g` =&gt; hello(luo)wenoh</span><br><span class="line"></span><br><span class="line">`:%s/\(l.*o\)/hello(\1)/g` =&gt; hello(luoweno)h</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2019/02/04/2019-1/">PREV</a><a class="next" href="/2019/01/01/2019/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2019/01/24/vimregexp/';
+var disqus_title = 'vim搜索中的正则表达式';
+var disqus_url = 'https://loovien.github.io/2019/01/24/vimregexp/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

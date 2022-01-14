@@ -1,20 +1,36 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MySQL单台服务器跑多个实例子 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="MySQL单台服务器跑多个实例子 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">MySQL单台服务器跑多个实例子</h1><div class="post-info">Dec 22, 2015</div><div class="post-content"><p>单台数据服务器资源往往是跑不满的, 如何更有效的利用服务器资源? 可以当台数据服务器跑多个MySQL实例。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h2 id="mysqld-multi-命令实现管理"><a href="#mysqld-multi-命令实现管理" class="headerlink" title="mysqld_multi 命令实现管理"></a>mysqld_multi 命令实现管理</h2><ol>
+<li><p>每个mysql实例都需要有独立的数据目录, socket链接, 端口. 所以, 为每个实例创建数据目录</p>
+<ul>
+<li><p>到mysql的数据目录下, 复制整个目录(有几个实例,就复制几份), 命名为新的实例名字(任意) (本例子拷贝了3份,分别放在/var/data/data{1,2,3}, Unix, Unix-like 注意文件权限)</p>
+</li>
+<li><p>多个实例可以共享一份数据目录, 但强烈不建议, 会有意想不到的问到<a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.7/en/multiple-data-directories.html">mysql官方</a></p>
+</li>
+</ul>
+</li>
+<li><p>修改my.cnf文件(本例子跑了3个实例子分别[1,2,3])</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line"># 默认 使用<span class="operator">/</span>tmp<span class="operator">/</span>mysql.sock1</span><br><span class="line">socket <span class="operator">=</span> <span class="operator">/</span>tmp<span class="operator">/</span>mysql.sock1</span><br><span class="line"></span><br><span class="line">[mysqld1]</span><br><span class="line">socket     <span class="operator">=</span> <span class="operator">/</span>tmp<span class="operator">/</span>mysql.sock1</span><br><span class="line">port       <span class="operator">=</span> <span class="number">3306</span></span><br><span class="line">pid<span class="operator">-</span>file   <span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>data<span class="operator">/</span>data1<span class="operator">/</span>data1.pid</span><br><span class="line">datadir    <span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>data<span class="operator">/</span>data1</span><br><span class="line"><span class="keyword">user</span>       <span class="operator">=</span> mysql</span><br><span class="line"></span><br><span class="line">[mysqld2]</span><br><span class="line">#mysqld     <span class="operator">=</span> <span class="operator">/</span>usr<span class="operator">/</span>bin<span class="operator">/</span>mysqld_safe</span><br><span class="line">#mysqladmin <span class="operator">=</span> <span class="operator">/</span>usr<span class="operator">/</span>bin<span class="operator">/</span>mysqladmin</span><br><span class="line">socket     <span class="operator">=</span> <span class="operator">/</span>tmp<span class="operator">/</span>mysql.sock2</span><br><span class="line">port       <span class="operator">=</span> <span class="number">3307</span></span><br><span class="line">pid<span class="operator">-</span>file   <span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>data<span class="operator">/</span>data2<span class="operator">/</span>data2.pid</span><br><span class="line">datadir    <span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>data<span class="operator">/</span>data2</span><br><span class="line"><span class="keyword">user</span>	   <span class="operator">=</span> mysql</span><br><span class="line"></span><br><span class="line">[mysqld3]</span><br><span class="line">#mysqld     <span class="operator">=</span> <span class="operator">/</span>usr<span class="operator">/</span>bin<span class="operator">/</span>mysqld_safe</span><br><span class="line">#mysqladmin <span class="operator">=</span> <span class="operator">/</span>usr<span class="operator">/</span>bin<span class="operator">/</span>mysqladmin</span><br><span class="line">socket     <span class="operator">=</span> <span class="operator">/</span>tmp<span class="operator">/</span>mysql.sock3</span><br><span class="line">port       <span class="operator">=</span> <span class="number">3308</span></span><br><span class="line">pid<span class="operator">-</span>file   <span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>data<span class="operator">/</span>data3<span class="operator">/</span>data3.pid</span><br><span class="line">datadir    <span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>data<span class="operator">/</span>data3</span><br><span class="line"><span class="keyword">user</span>	   <span class="operator">=</span> mysql</span><br></pre></td></tr></table></figure></li>
+<li><p>启动/停止</p>
+<ul>
+<li><p><code>mysqld_multi [OPTIONS] &#123;start|stop|report&#125; [GNR,GNR,GNR...]</code> <strong>GNR</strong> 表示组名, 本例子启动所有为<code>mysqld_multi start 1-3</code>, 启动单个 <code>mysqld_multi start 1</code></p>
+</li>
+<li><p>同理 停止 <code>mysqld_multi stop 1-3</code></p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="mysqld-safe-实现"><a href="#mysqld-safe-实现" class="headerlink" title="mysqld_safe 实现"></a>mysqld_safe 实现</h2><ol>
+<li><p>这种方式实现很简单了, 直接使用命令</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysqld_safe <span class="comment">--defaults-file=/etc/my1.cnf --user=mysql &amp;</span></span><br><span class="line">mysqld_safe <span class="comment">--defaults-file=/etc/my2.cnf --user=mysql &amp;</span></span><br><span class="line">mysqld_safe <span class="comment">--datadir=/var/data/data3 --pid-file=/var/data/data3/data3.pid --socket=/tmp/mysql.sock3 --user=mysql &amp;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2015/12/25/PHP5-4-Trait-%E4%BD%BF%E7%94%A8/">PREV</a><a class="next" href="/2015/09/29/RazorSQL-%E6%B3%A8%E5%86%8C%E7%A0%81/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2015/12/22/MySQL单台服务器跑多个实例子/';
+var disqus_title = 'MySQL单台服务器跑多个实例子';
+var disqus_url = 'https://loovien.github.io/2015/12/22/MySQL单台服务器跑多个实例子/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

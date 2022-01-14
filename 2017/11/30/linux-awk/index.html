@@ -1,20 +1,191 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 理解linux-awk命令 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="awk常用案例"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">理解linux-awk命令</h1><div class="post-info">Nov 30, 2017</div><div class="post-content"><p>AWK是一门古老的 linux shell 语言。每个unix-like系统都默认安装, linux下主要是 gawk这个版本。awk有着其独特的魅力。来简单的学习下它。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<p>awk的语法结构简单如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BEGIN &#123; <span class="built_in">print</span> <span class="string">&quot;start&quot;</span>&#125;</span><br><span class="line">&#123; awk_expression &#125;</span><br><span class="line">END &#123;<span class="built_in">print</span> <span class="string">&quot;end&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+<p>awk表达式支持算数运算</p>
+<table>
+<thead>
+<tr>
+<th align="left">操作符</th>
+<th align="left">类型</th>
+<th align="left">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">+</td>
+<td align="left">integer</td>
+<td align="left">加</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">integer</td>
+<td align="left">减</td>
+</tr>
+<tr>
+<td align="left">*</td>
+<td align="left">integer</td>
+<td align="left">乘</td>
+</tr>
+<tr>
+<td align="left">/</td>
+<td align="left">integer</td>
+<td align="left">除</td>
+</tr>
+<tr>
+<td align="left">%</td>
+<td align="left">integer</td>
+<td align="left">取模</td>
+</tr>
+<tr>
+<td align="left">空格</td>
+<td align="left">string</td>
+<td align="left">字符串连接</td>
+</tr>
+</tbody></table>
+<p>简单的栗子:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;&quot;</span>| awk <span class="string">&quot;&#123;print 1+2&#125;&quot;</span> // output 3</span><br></pre></td></tr></table></figure>
 
-block container
-    include mixins/post
-    +post(page)
+<p>awk支持的判断表达式</p>
+<table>
+<thead>
+<tr>
+<th align="left">操作符</th>
+<th align="left">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">==</td>
+<td align="left">相等</td>
+</tr>
+<tr>
+<td align="left">!=</td>
+<td align="left">不等</td>
+</tr>
+<tr>
+<td align="left">&gt;</td>
+<td align="left">大于</td>
+</tr>
+<tr>
+<td align="left">&gt;=</td>
+<td align="left">大等于</td>
+</tr>
+<tr>
+<td align="left">&lt;</td>
+<td align="left">小于</td>
+</tr>
+<tr>
+<td align="left">&lt;=</td>
+<td align="left">小等于</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;&quot;</span> | awk <span class="string">&#x27;&#123;print 2 == 3&#125;&#x27;</span> // output 0</span><br></pre></td></tr></table></figure>
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+<p>awk正则匹配</p>
+<table>
+<thead>
+<tr>
+<th align="left">操作符</th>
+<th align="left">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">~</td>
+<td align="left">匹配</td>
+</tr>
+<tr>
+<td align="left">!~</td>
+<td align="left">不匹配</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;luowen&quot;</span> | awk <span class="string">&#x27;&#123;print $0 ~ &quot;uow&quot;&#125;&#x27;</span> // output 1</span><br></pre></td></tr></table></figure>
 
-block copyright
-    include partial/copyright
+<p>awk命令语法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( conditional ) statement [ <span class="keyword">else</span> statement ]</span><br><span class="line"><span class="keyword">while</span> ( conditional ) statement</span><br><span class="line"><span class="keyword">for</span> ( expression ; conditional ; expression ) statement</span><br><span class="line"><span class="keyword">for</span> ( variable <span class="keyword">in</span> array ) statement</span><br><span class="line"><span class="built_in">break</span></span><br><span class="line"><span class="built_in">continue</span></span><br><span class="line">&#123; [ statement ] ...&#125;</span><br><span class="line">variable=expression</span><br><span class="line"><span class="built_in">print</span> [ expression-list ] [ &gt; expression ]</span><br><span class="line"><span class="built_in">printf</span> format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">next </span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<p>循环栗子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">BEGIN &#123;</span><br><span class="line">    i=1;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= 10) &#123;</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">&quot;The square of &quot;</span>, i, <span class="string">&quot; is &quot;</span>, i*i;</span><br><span class="line">        i = i+1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i=1; i &lt;= 10; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">&quot;The square of &quot;</span>, i, <span class="string">&quot; is &quot;</span>, i*i;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="built_in">exit</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>awk使用<code>-F</code>指定分隔符定义或在<code>BEGIN&#123;FS=&quot;:&quot;&#125;</code>制定, 默认awk使用空格分隔输入的字段</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk -F: <span class="string">&#x27;&#123;if ($2 == &quot;&quot;) print $1 &quot;: no password!&quot;&#125;&#x27;</span> &lt;/etc/passwd</span><br><span class="line">$ 或使用 FS 指定</span><br><span class="line">$ awk <span class="string">&#x27;BEGIN&#123; FS=&quot;:&quot;&#125; &#123;if ($2 == &quot;&quot;) &#123;print $1 &quot;passoword not set yet!&quot;&#125;&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>awk在<code>BEGIN&#123;OFS=&quot;#&quot;&#125;</code>制定输出分隔符</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">&#x27;BEGIN&#123;OFS=&quot;#&quot;&#125; &#123;print $1, $2&#125;&#x27;</span> &lt; /etc/passwd // output root<span class="comment">#x ..</span></span><br></pre></td></tr></table></figure>
+
+<p>awk使用<code>NF</code>常量判断输入的字段数量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ awk -F: <span class="string">&#x27;&#123; print &quot;字段数量&quot; NF; if (NF == 8) &#123; print $0 &#125;&#125;&#x27;</span> &lt; /etc/passwd // output NONE</span><br></pre></td></tr></table></figure>
+
+<p>awk使用<code>NR</code>常量来计算行数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ awk -F: <span class="string">&#x27;&#123;print &quot;当前字段数量: &quot; NR; if (NR &gt; 4) &#123;exit;&#125;&#125;&#x27;</span> &lt; /etc/passwd // 之处里前4个字段数据</span><br></pre></td></tr></table></figure>
+
+<p>awk生成随机数, 会根据硬件设备生成一个不变化的随机数, 严格来说, 这个假的随机数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;&quot;</span> | awk <span class="string">&#x27;&#123;printf(&quot;生成随机数: %d&quot;, int(rand() * 10))&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>awk的字符串函数</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">名称</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">index(string,search)</td>
+<td align="left">搜索字符的索引值</td>
+</tr>
+<tr>
+<td align="left">length(string)</td>
+<td align="left">判断字符串长度</td>
+</tr>
+<tr>
+<td align="left">split(string,array,separator)</td>
+<td align="left">切割字符串到数组array中, 返回数组的长度</td>
+</tr>
+<tr>
+<td align="left">substr(string,position)</td>
+<td align="left">前切字符串 position表示从那个字符开始, 默认索引1开始算</td>
+</tr>
+<tr>
+<td align="left">substr(string,position,max)</td>
+<td align="left">剪切字符串, position表示从那个字符串开始, max表示剪切几个字符</td>
+</tr>
+<tr>
+<td align="left">sub(regex,replacement)</td>
+<td align="left">替换, 类似sed -n ‘s/old/new/p’</td>
+</tr>
+<tr>
+<td align="left">sub(regex,replacement,string)</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">match(string,regex)</td>
+<td align="left">正则匹配, 返回1/0</td>
+</tr>
+<tr>
+<td align="left">tolower(string)</td>
+<td align="left">字符串小写</td>
+</tr>
+<tr>
+<td align="left">toupper(string)</td>
+<td align="left">字符串大写</td>
+</tr>
+</tbody></table>
+<p>awk调用系统函数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;&quot;</span>| awk <span class="string">&quot;&#123;if(system(&#x27;/bin/rm /tmp/test.log&#x27;) != 0) &#123; print &#x27;delete /tmp/test.log not OK&#x27;&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>awk数组的使用, (计算网站nginx访问日志的ip请求量)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">&#x27;&#123;ipList[$1]++&#125; END&#123; for (ipAddr in ipList) &#123;printf(&quot;ip地址:%s 访问数量:%d\n&quot;, ipAddr, ipList[ipAddr])&#125;&#125;&#x27;</span> &lt; /var/<span class="built_in">log</span>/nginx/access.log</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a target="_blank" rel="noopener" href="http://www.grymoire.com/Unix/Awk.html#uh-26">参考原帖</a></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2017/12/07/bash%E8%84%9A%E6%9C%AC%E5%AE%9A%E6%9C%9F%E5%88%9B%E5%BB%BAMySQL%E5%A2%9E%E9%87%8F%E8%A1%A8/">PREV</a><a class="next" href="/2017/11/28/python%E8%A7%A3%E7%A0%81unicode%E5%AD%97%E7%AC%A6/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2017/11/30/linux-awk/';
+var disqus_title = '理解linux-awk命令';
+var disqus_url = 'https://loovien.github.io/2017/11/30/linux-awk/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

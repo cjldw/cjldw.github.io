@@ -1,20 +1,63 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> mysql主从备份 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="mysql主从备份 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">mysql主从备份</h1><div class="post-info">Sep 15, 2016</div><div class="post-content"><p>MySQL的主从复制配置很简单, 帖子已经很多了, 再不厌其烦的写主要是为了下篇配合zabbix做监控存活做准备.</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h3 id="先说mysql备份策略"><a href="#先说mysql备份策略" class="headerlink" title="先说mysql备份策略"></a>先说mysql备份策略</h3><ul>
+<li><p>冷备份(不能实时备份)</p>
+<ol>
+<li>将mysql的dataDir目录打包scp/rsync 到备份服务器. 优点: 简单暴力. 冷备的缺点, mysql版本一致, 后期数据量大了, 备份越来越久.</li>
+<li>使用mysqldump, (mysqlcopy, mysqlbackup企业版) 自带工具备份, 有点: 简单, 一条命令就ok, mysql版本能向上兼容, 数据量大, 备份慢.</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p>热备份(及时备份)</p>
+<ol>
+<li>mysql主从复制, 主mysql开启bin-log, 从mysql读取主bin-log文件名和位置, 写入到从库中(mysql版本需要一致)</li>
+<li>inotify+rsync inotify检测文件是否发生变动, 如变动使用rsync备份到远程.(使用所有备份, 不只是mysql业务)</li>
+<li>drbd (分布式块设备) 即时写入.(使用所有备份, 不只是mysql业务)</li>
+</ol>
+</li>
+</ul>
+<h3 id="配置mysql主从配置"><a href="#配置mysql主从配置" class="headerlink" title="配置mysql主从配置."></a>配置mysql主从配置.</h3><ul>
+<li><p>英文好的同学, 直接参照<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.6/en/replication.html">官方文档</a></p>
+</li>
+<li><p>默认环境</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span><span class="number">.1</span><span class="number">.100</span> 主mysql5<span class="number">.6</span></span><br><span class="line"><span class="number">192.168</span><span class="number">.1</span><span class="number">.101</span> 从mysql5<span class="number">.6</span></span><br></pre></td></tr></table></figure></li>
+<li><p>主mysql配置</p>
+<ol>
+<li><p>编辑my.cnf. (参考多目录下my.cnf的优先级)</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bind<span class="operator">-</span>address<span class="operator">=</span><span class="number">192.168</span><span class="number">.1</span><span class="number">.100</span></span><br><span class="line">server<span class="operator">-</span>id<span class="operator">=</span><span class="number">1</span></span><br><span class="line">bin_log<span class="operator">=</span><span class="operator">/</span>var<span class="operator">/</span>log<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>bin.log</span><br><span class="line">binlog_do_db<span class="operator">=</span>newdatabase # 需要同步的数据库, 不写, 表示全部库</span><br></pre></td></tr></table></figure></li>
+<li><p>添加具有复制权限的用户</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> REPLICATION SLAVE <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;slave&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;slave_password&#x27;</span>;</span><br><span class="line">flush privileges; # 刷新权限</span><br></pre></td></tr></table></figure></li>
+<li><p>重启动mysql服务 <code>service mysqld restart | systemctl restart mysqld</code></p>
+</li>
+<li><p>锁定当前主库的数据状态, 将当前数据状态备份到从库中去.</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">USE DATABASE;</span><br><span class="line">FLUSH TABLES <span class="keyword">WITH</span> READ LOCK;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> MASTER STATUS;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+--------------+------------------+</span></span><br><span class="line"><span class="operator">|</span> File             <span class="operator">|</span> Position <span class="operator">|</span> Binlog_Do_DB <span class="operator">|</span> Binlog_Ignore_DB <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+--------------+------------------+</span></span><br><span class="line"><span class="operator">|</span> mysql<span class="operator">-</span>bin<span class="number">.000001</span> <span class="operator">|</span>      <span class="number">107</span> <span class="operator">|</span> newdatabase  <span class="operator">|</span>                  <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+--------------+------------------+</span></span><br><span class="line"></span><br><span class="line"># 此窗口不要动了(如果有改动, 会自动解除锁), 新开一个窗口, 将数据库导出</span><br><span class="line"># 新窗口mysql回话</span><br><span class="line">mysqldump <span class="operator">-</span>uUsername <span class="operator">-</span>pPassword newdatabase <span class="operator">&gt;</span> newdatabase<span class="operator">-</span>dump.sql</span><br><span class="line"></span><br><span class="line">exit; # 主配置完成, 关闭退出.</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>从mysql配置</p>
+<ol>
+<li><p>导入主mysql数据</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql <span class="operator">-</span>uUser <span class="operator">-</span>pPassword newdatabase <span class="operator">&lt;</span> newdatabase<span class="operator">-</span>dump.sql</span><br></pre></td></tr></table></figure></li>
+<li><p>编辑从my.cnf</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server<span class="operator">-</span>id<span class="operator">=</span><span class="number">2</span></span><br><span class="line">relay<span class="operator">-</span>log<span class="operator">=</span><span class="operator">/</span>var<span class="operator">/</span>log<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>relay<span class="operator">-</span>bin.log</span><br><span class="line">log_bin<span class="operator">=</span><span class="operator">/</span>var<span class="operator">/</span>log<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>bin.log</span><br><span class="line">binlog_do_db<span class="operator">=</span>newdatabase</span><br></pre></td></tr></table></figure></li>
+<li><p>重启从mysql服务 <code>service mysqld restart | systemctl restart mysqld</code></p>
+</li>
+<li><p>设置从mysql连接主mysql</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CHANGE MASTER <span class="keyword">TO</span> MASTER_HOST<span class="operator">=</span><span class="string">&#x27;192.168.1.100&#x27;</span>,</span><br><span class="line">MASTER_USER<span class="operator">=</span><span class="string">&#x27;slave&#x27;</span>,</span><br><span class="line">MASTER_PASSWORD<span class="operator">=</span><span class="string">&#x27;slavepassword&#x27;</span>,</span><br><span class="line">MASTER_LOG_FILE<span class="operator">=</span><span class="string">&#x27;mysql-bin.000001&#x27;</span>,</span><br><span class="line">MASTER_LOG_POS<span class="operator">=</span>  <span class="number">107</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">start</span> slave;</span><br></pre></td></tr></table></figure></li>
+<li><p>查看是否成功</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> SLAVE STATUS\G</span><br><span class="line"></span><br><span class="line"># 出现一下 表明已经ok了</span><br><span class="line">Slave_IO_Running: Yes</span><br><span class="line">Slave_SQL_Running: Yes</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>仅作参考, 有问题欢迎拍砖. :)</p>
+</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2016/09/17/go%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%AE%9E%E7%8E%B0%E7%BF%BB%E5%A2%99/">PREV</a><a class="next" href="/2016/09/13/js%E5%A4%9A%E5%AF%B9%E8%B1%A1%E6%95%B0%E7%BB%84%E5%94%AF%E4%B8%80%E6%96%B9%E6%B3%95/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2016/09/15/mysql主从备份/';
+var disqus_title = 'mysql主从备份';
+var disqus_url = 'https://loovien.github.io/2016/09/15/mysql主从备份/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

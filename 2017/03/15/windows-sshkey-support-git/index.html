@@ -1,20 +1,45 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> windows 生成sshkey 实现github git协议克隆提交代码 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="windows 生成sshkey 实现github git协议克隆提交代码 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">windows 生成sshkey 实现github git协议克隆提交代码</h1><div class="post-info">Mar 15, 2017</div><div class="post-content"><p>一般的, 我们从github, 或是私有仓库gitlab中克隆代码, 都是使用 git clone <a target="_blank" rel="noopener" href="https://github.com/u/xxx.git">https://github.com/u/xxx.git</a>, https协议相比git, (<a href="mailto:&#103;&#105;&#116;&#64;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#46;&#99;&#111;&#x6d;">&#103;&#105;&#116;&#64;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#46;&#99;&#111;&#x6d;</a>:u:/xx.git) 会慢很多, 而且要保存帐号密码到本地,才能实现免帐号密码登入. 使用ssh协议就方便很多了.</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h3 id="废话不多说-开搞"><a href="#废话不多说-开搞" class="headerlink" title="废话不多说, 开搞"></a>废话不多说, 开搞</h3><ol>
+<li><p>生成密钥,公钥对. 随便找一台linux机器, 执行如下命令</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-genkey -t rsa -f <span class="built_in">test</span> // 生成<span class="built_in">test</span> test.pub 密钥公钥对</span><br><span class="line">$ sz <span class="built_in">test</span>*  // 下载密钥公钥对到本地 (rz命令不存在, 安装lrzsz)</span><br></pre></td></tr></table></figure></li>
+<li><p>复制<code>test.pub</code>中的内容, 贴到你的github中的sshkey管理.具体导航如下</p>
+<ul>
+<li>(确认您登入了啊)点击github右上角的您的头像, 找到<code>settings</code></li>
+<li>左边导航菜单招到<code>SSH and GPG keys</code></li>
+<li>点击右上角 <code>New SSH key</code></li>
+<li>随便输入标题</li>
+<li>把复制的<code>test.pub</code>内容贴到文本框中.</li>
+</ul>
+</li>
+<li><p>本地配置ssh</p>
+<ul>
+<li><p>找到你的用户目录, 一般在 <code>C:\Users\您的名字</code>, 也可以使用下面步骤打开</p>
+<ol>
+<li><code>win+r</code> 打开运行, 输入<code>cmd</code>, 此时打开了黑窗口</li>
+<li>输入<code>explorer .</code> 此时打开的就是你的用户目录了</li>
+</ol>
+</li>
+<li><p>在用户下新建<code>.ssh</code>目录, windows不能新建, 可在刚打开的黑窗口中输入 <code>mkdir .ssh</code></p>
+</li>
+<li><p>复制第一步生成的<code>test test.pub</code> 文件到此目录</p>
+</li>
+<li><p>新建 <code>config</code> 文件, 并复制如下内容</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对应github地址</span></span><br><span class="line">Host github.com</span><br><span class="line">IdentityFile ~/.ssh/<span class="built_in">test</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>随便找自己一个仓库地址, 到黑窗口执行</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:your-name/your-repo.git</span><br></pre></td></tr></table></figure></li>
+<li><p>是不是稍微变快了点😄, 随便改点东西, commit push 发现是不是不用密码了? 😄</p>
+</li>
+</ol>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2017/03/26/debian8%E7%BC%96%E8%AF%91nginx%E5%92%8Cphp7/">PREV</a><a class="next" href="/2017/02/20/swoole-webapp%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2017/03/15/windows-sshkey-support-git/';
+var disqus_title = 'windows 生成sshkey 实现github git协议克隆提交代码';
+var disqus_url = 'https://loovien.github.io/2017/03/15/windows-sshkey-support-git/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

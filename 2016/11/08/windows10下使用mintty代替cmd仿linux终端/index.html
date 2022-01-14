@@ -1,20 +1,30 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> windows10下使用mintty代替cmd仿linux终端 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="windowns10 安装cgywin实现linux终端"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">windows10下使用mintty代替cmd仿linux终端</h1><div class="post-info">Nov 9, 2016</div><div class="post-content"><p>大部分的开发者都都是在windows下开发的(包括本人), 但开发的很多时候, 我们都希望我们windows的cmd窗口能想unix-like系统那样功能强大. 怎么办呢? 今天来实现它.</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h4 id="来一发"><a href="#来一发" class="headerlink" title="来一发!"></a>来一发!</h4><ul>
+<li><p>废话不多说, 来一张预览图</p>
+<p>  <img src="/images/tty/1.png" alt="预览"></p>
+<p>  <strong>还不错吧</strong></p>
+</li>
+</ul>
+<h4 id="如何搭建"><a href="#如何搭建" class="headerlink" title="如何搭建"></a>如何搭建</h4><ul>
+<li><p>到<a target="_blank" rel="noopener" href="http://www.cygwin.com/install.html">官方网站</a> 下载安装</p>
+</li>
+<li><p>下载安装后, 将安装目录下的<code>bin, sbin</code>到环境变量中(<em><em>非必须</em></em>), 这样是为了cmd下也可以使用linux命令.</p>
+</li>
+<li><p>将bin目录下的mintty.exe 穿件快捷方式, 移动到<code>c:\windows\system32\cmmd</code> 以后启动直接使用<code>win+r</code> 输入cmmd即可.</p>
+</li>
+<li><p>字体设置, 窗口透明, 右击打开的窗口, 自行设置即可.</p>
+</li>
+<li><p>是不是很简单, 很实用, 逼格一下上升了很多了吧</p>
+</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2016/11/11/%E4%B8%8D%E4%BD%BF%E7%94%A8ssl%E5%AE%9E%E7%8E%B0%E5%8A%A0%E5%AF%86%E7%99%BB%E5%85%A5/">PREV</a><a class="next" href="/2016/10/31/phpstorm-debug/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2016/11/08/windows10下使用mintty代替cmd仿linux终端/';
+var disqus_title = 'windows10下使用mintty代替cmd仿linux终端';
+var disqus_url = 'https://loovien.github.io/2016/11/08/windows10下使用mintty代替cmd仿linux终端/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

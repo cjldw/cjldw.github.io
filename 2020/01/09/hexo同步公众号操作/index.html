@@ -1,20 +1,24 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 同步hexo博客内容到公众号 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="再hexo中编写好的博客文件，实现自动同步到公众号中。"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">同步hexo博客内容到公众号</h1><div class="post-info">Jan 9, 2020</div><div class="post-content"><p>最近想把hexo写的博客内容也同步到微信公众号中， 萌生了一个简单的项目，那就来搞它吧。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<h2 id="大致的思路"><a href="#大致的思路" class="headerlink" title="大致的思路"></a>大致的思路</h2><p>hexo 编写好的文档后， 推送到远程仓库， 仓库使用webhook通知服务器， 服务器脚本拉取最新代码后，</p>
+<p>判断有没有新写的博客(难点， 怎么获取最近编辑的博客文件的markdown文件呢)， 有的话， 使用 <code>hexo deploy</code> </p>
+<p>发布部署后，再读取博客的标题，详情摘要, 有图片的话，再把图片对应生成微信的图文素材，调用微信开放接口,</p>
+<p>同步到微信中。再调用群发接口，通知关注的用户(哈哈，好像很完美)</p>
+<h4 id="解析md文件"><a href="#解析md文件" class="headerlink" title="解析md文件"></a>解析md文件</h4><p>hexo 博客markdown文件格式大致: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 同步hexo博客内容到公众号</span><br><span class="line">date: 2020-01-09 21:49:56</span><br><span class="line">desc: 再hexo中编写好的博客文件，实现自动同步到公众号中。</span><br><span class="line">tags: blog, WeChat</span><br><span class="line">image: <span class="built_in">source</span>/imgs/hexo.jpg</span><br><span class="line">---</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>读取开头中的 title/公众号标题, date/原文http路径 , image/公众号的图片, 有的话。</p>
+<h3 id="推送微信"><a href="#推送微信" class="headerlink" title="推送微信"></a>推送微信</h3><p>对应项目中的<code>net.go</code></p>
+<h3 id="hexo-发布"><a href="#hexo-发布" class="headerlink" title="hexo 发布"></a>hexo 发布</h3><p>对应项目中的<code>hexo.go</code></p>
+<h3 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h3><p>包含了所有信息, 想想无所谓了,公众号有白名单。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/loovien/vxgo.git</span><br></pre></td></tr></table></figure>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2020/02/10/iNodevpn/">PREV</a><a class="next" href="/2020/01/01/2020/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2020/01/09/hexo同步公众号操作/';
+var disqus_title = '同步hexo博客内容到公众号';
+var disqus_url = 'https://loovien.github.io/2020/01/09/hexo同步公众号操作/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

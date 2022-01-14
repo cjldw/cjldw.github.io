@@ -1,20 +1,31 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> nginx-with-http2 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="nginx 服务支持http2 协议"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">nginx-with-http2</h1><div class="post-info">Jul 11, 2018</div><div class="post-content"><p>现在主流的浏览器都支持了http2, 我们也有必要让我们的服务器支持下http2协议了。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h3 id="http-2-主要的优势"><a href="#http-2-主要的优势" class="headerlink" title="http/2 主要的优势"></a>http/2 主要的优势</h3><ol>
+<li>所有的请求都是并发的, 而不是队列的。</li>
+<li>http头部是压缩过的, 高效快速。</li>
+<li>网页传输是二进制的, 不再是文本, 更加高效。</li>
+<li>在用户不请求的情况下, 服务端可以push数据下来。（这里的不请求是指， 用户和服务端有连接的情况下）</li>
+</ol>
+<p>ps: http2的安全问题是基于https上的。</p>
+<h3 id="nginx-如何配置"><a href="#nginx-如何配置" class="headerlink" title="nginx 如何配置"></a>nginx 如何配置</h3><ol>
+<li><p>检测您的nginx是否支持了 http2</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ nginx -V | grep --with-http_v2_module</span><br></pre></td></tr></table></figure></li>
+<li><p>没有的话, 需要从新编译 (非 root 用户使用 sudo)</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cd /path/to/nginx/source/code/dir</span></span><br><span class="line"><span class="comment"># ./configure --prefix=/usr/local/nginx --with-pcre-jit --with-ipv6 --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_v2_module --with-http_sub_module --with-http_xslt_module --with-stream --with-stream_ssl_module --with-mail --with-mail_ssl_module --with-threads</span></span><br><span class="line"><span class="comment"># make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure></li>
+<li><p>配置nginx支持http2</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim /path/to/nginx/install/dir/conf/default</span></span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name yourdomain.com;</span><br><span class="line">    add_header Strict-Transport-Security <span class="string">&quot;max-age=31536000&quot;</span> always;</span><br><span class="line">    <span class="built_in">return</span> 301 https://$server_name<span class="variable">$request_uri</span>;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl http2;</span><br><span class="line">    listen [::]:443 ssl http2;</span><br><span class="line">    server_name youdomain.com;</span><br><span class="line">    root /data/www/;</span><br><span class="line"></span><br><span class="line">    ssl_certificate /path/to/ssl/yourdomain.crt;</span><br><span class="line">    ssl_certificate_key /path/to/ssl/yourdomain.key;</span><br><span class="line">    ssl_session_cache    shared:SSL:1m;</span><br><span class="line">    ssl_session_timeout  5m;</span><br><span class="line">    ssl_ciphers  HIGH:!aNULL:!MD5;</span><br><span class="line">    ssl_prefer_server_ciphers  on;</span><br><span class="line">    <span class="comment"># add Strict-Transport-Security to prevent man in the middle attacks</span></span><br><span class="line">    index index.html index.htm index.php;</span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass http://localhost:8080;</span><br><span class="line">        proxy_set_header Host <span class="variable">$host</span>;</span><br><span class="line">        proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">        proxy_set_header X-forwarded-for <span class="variable">$remote_addr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    location = /favicon.ico &#123; access_log off; log_not_found off; &#125;</span><br><span class="line">    location = /robots.txt  &#123; access_log off; log_not_found off; &#125;</span><br><span class="line">    sendfile on;</span><br><span class="line">    client_max_body_size 100m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>启动nginx</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /path/to/nginx/install/dir/sbin/nginx -t</span></span><br><span class="line"><span class="comment"># /path/to/nginx/install/dir/sbin/nginx</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="验证是是否OK"><a href="#验证是是否OK" class="headerlink" title="验证是是否OK"></a>验证是是否OK</h3><p>打开chrome F12 查看 <code>h2</code>表示已经使用了http2了</p>
+<p><img src="/images/http2.jpg" alt="http2协议支持"></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2018/08/04/swoole%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1/">PREV</a><a class="next" href="/2018/06/19/python%E8%A3%85%E9%A5%B0%E5%99%A8/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2018/07/11/nginx-with-http2/';
+var disqus_title = 'nginx-with-http2';
+var disqus_url = 'https://loovien.github.io/2018/07/11/nginx-with-http2/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

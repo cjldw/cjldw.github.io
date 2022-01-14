@@ -1,20 +1,32 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> swoole-webapp-environment-build · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="swoole-webapp-environment-build - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">swoole-webapp-environment-build</h1><div class="post-info">Feb 20, 2017</div><div class="post-content"><p>准备做一个基于swoole的webapp框架项目, 但是swoole在windows机器上是跑不起来的, 思想向后, 用vagrant包装一个<br>自己的box,后期重用度更高点.</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h1 id="使用预安装好的box"><a href="#使用预安装好的box" class="headerlink" title="使用预安装好的box"></a>使用预安装好的box</h1><ol>
+<li>下载安装virtualbox<a target="_blank" rel="noopener" href="https://www.virtualbox.org/wiki/Downloads">地址</a></li>
+<li>下载安装vagrant<a target="_blank" rel="noopener" href="https://www.vagrantup.com/">地址</a></li>
+<li>vagrant init luowen/swoole-webapp; vagrant up –provider=virtualbox</li>
+</ol>
+<hr>
+<h1 id="一下是安装过程-可忽略"><a href="#一下是安装过程-可忽略" class="headerlink" title="一下是安装过程, 可忽略"></a>一下是安装过程, 可忽略</h1><h2 id="下载php7-1-编译安装"><a href="#下载php7-1-编译安装" class="headerlink" title="下载php7.1 编译安装"></a>下载php7.1 编译安装</h2><ol>
+<li><p>安装必要的依赖 <code>pcre freetype jpeg png xml curl mcrypt</code>(太多了, 不写)</p>
+</li>
+<li><p>编译php</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/configure --prefix=/usr/<span class="built_in">local</span>/php7 \</span><br><span class="line">    --with-config-file=/usr/<span class="built_in">local</span>/php7/etc/php.ini \</span><br><span class="line">    --with-config-scan-dir=/usr/<span class="built_in">local</span>/php7/etc/conf.d \</span><br><span class="line">    --enable-bcmath \</span><br><span class="line">    --with-curl \</span><br><span class="line">    --with-gd \</span><br><span class="line">    --enable-filter \</span><br><span class="line">    --enable-fpm \</span><br><span class="line">    --enable-gd-native-ttf \</span><br><span class="line">    --with-freetype-dir \</span><br><span class="line">    --with-jpeg-dir \</span><br><span class="line">    --with-png-dir \</span><br><span class="line">    --with-intl \</span><br><span class="line">    --enable-mbstring \</span><br><span class="line">    --with-mcrypt \</span><br><span class="line">    --enable-mysqlnd \</span><br><span class="line">    --with-mysqli=mysqlnd \</span><br><span class="line">    --with-pdo-mysql=mysqlnd \</span><br><span class="line">    --with-openssl \</span><br><span class="line">    --enable-zip \</span><br><span class="line">    --enable-zlib \</span><br><span class="line">    --enable-xmlreader \</span><br><span class="line">    --enable-xmlwriter</span><br></pre></td></tr></table></figure></li>
+<li><p>下载<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/archive/v2.0.6.tar.gz">swoole包</a>, 安装php swoole支持 (google phpize)</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> phpize \</span><br><span class="line">./configure --with-php-config=/usr/<span class="built_in">local</span>/php7/bin/php-config \</span><br><span class="line">--enable-coroutine \</span><br><span class="line">--enable-thread \</span><br><span class="line">--enable-openssl \</span><br><span class="line">--enable-swoole</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ol start="4">
+<li><p>编辑php.ini 添加模块查看模块</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/<span class="built_in">local</span>/php7/bin/php -m | grep swoole</span><br></pre></td></tr></table></figure></li>
+<li><p>加载了swoole后,明天继续, 累了!</p>
+</li>
+</ol>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2017/03/15/windows-sshkey-support-git/">PREV</a><a class="next" href="/2016/11/28/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2017/02/20/swoole-webapp环境搭建/';
+var disqus_title = 'swoole-webapp-environment-build';
+var disqus_url = 'https://loovien.github.io/2017/02/20/swoole-webapp环境搭建/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

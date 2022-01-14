@@ -1,20 +1,58 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 单点(SSO)登入实现 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="单点(SSO)登入实现 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">单点(SSO)登入实现</h1><div class="post-info">May 31, 2016</div><div class="post-content"><p>场景: 一公司旗下有很多网站，要求在旗下任意一个网站登入后，其他网站都处于登入状态．<br>说明: 本帖子不涉及代码实现，之说明重要的点．(阐述不恰当的，欢迎拍砖)</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h3 id="理解登入原理"><a href="#理解登入原理" class="headerlink" title="理解登入原理"></a>理解登入原理</h3><p>就我个人理解，网站登入两种实现．</p>
+<ul>
+<li>基于session登入</li>
+<li>基于token登入</li>
+</ul>
+<h4 id="基于session登入原理"><a href="#基于session登入原理" class="headerlink" title="基于session登入原理"></a>基于session登入原理</h4><ol>
+<li><p>用户访问网站的一个页面, 服务器端随机生成一个标识sessionId, 更具服务端session配置，session数据可以保存在文件中(默认),也可保存在数据库(关系性或nosql)中 同时并把sessionId的值添加到响应头中，让用户浏览器已cookie的方式保存．</p>
+</li>
+<li><p>用户再次访问其他网页时候，请求头中就会带上上一步中sessionID, 服务端根据sessionId到取得对应用户的信息．判断是否登入.</p>
+</li>
+<li><p>session过期时间</p>
+<ul>
+<li>写入浏览器cookie的过期时间．当浏览器的cookie过期了，会导致sessionId丢失，倒是session失效．需要重新登入．</li>
+<li>服务端的session过期，当服务端session过期，就算cookie没有过期，session也失效．　需要重新登入．</li>
+<li>注意，每次请求，服务端session如果有存在值的话，需要更新服务端session过期时间，这些都session都是默认帮我们做了(一直访问，session不会失效)．</li>
+</ul>
+</li>
+<li><p>几天免登入实现</p>
+<ul>
+<li>将session中的数据加密一起保存到cookie中，cookie的过期时间设置到对应几天失效，期间用户访问带上了cookie中的加密的值，实现免登入．</li>
+</ul>
+</li>
+</ol>
+<h4 id="基于token登入原理"><a href="#基于token登入原理" class="headerlink" title="基于token登入原理"></a>基于token登入原理</h4><ul>
+<li><p>token验证有很多方式, (HTTP_BASIC Authorized, Auth0 auth2, jwt …)，那jwt(json web token)说明．</p>
+<ol>
+<li>用户请求认证，认证服务器发放token(token中包含了用户信息).</li>
+<li>用户之后每个请求都在请求头中带上认证头信息.</li>
+<li>token过期，再次请求认证服务器，刷新token.</li>
+</ol>
+</li>
+</ul>
+<h4 id="单点-SSO-登入实现"><a href="#单点-SSO-登入实现" class="headerlink" title="单点(SSO)登入实现"></a>单点(SSO)登入实现</h4><ul>
+<li>根据session,token登入原理，很明显基于token的方式无需要任何而外的配置，就实现了单点登入功能了．</li>
+<li>session实现单点登入．<ul>
+<li>保证服务端session是共享的，默认文件存储需要设置保存session的目录共享，推荐使用数据库存储．</li>
+<li>设置cookie作用域，域名，是每个域名下都能读取到保存sessionId的cookie</li>
+</ul>
+</li>
+</ul>
+<h4 id="session-vs-token"><a href="#session-vs-token" class="headerlink" title="session vs token"></a>session vs token</h4><ul>
+<li>实现复杂度　token &gt; session</li>
+<li>性能　token &gt; session </li>
+<li>扩展性 token &gt; session</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2016/07/12/bashshell-case-syntax/">PREV</a><a class="next" href="/2016/05/30/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B06%E4%BD%8D%E6%95%B0%E8%A1%A8%E7%A4%BA%E7%99%BE%E4%BA%BF/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2016/05/31/单点登入(SSO)实现/';
+var disqus_title = '单点(SSO)登入实现';
+var disqus_url = 'https://loovien.github.io/2016/05/31/单点登入(SSO)实现/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

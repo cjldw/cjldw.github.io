@@ -1,20 +1,23 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 清除win10流氓 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="清除win10上流氓软件"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">清除win10流氓</h1><div class="post-info">Apr 12, 2019</div><div class="post-content"><p>最近电脑打开chrome浏览器， 莫名其妙的自动打开hao123网站, 有点被强奸了感觉, 网上搜索一大推解决方案， 发现都不是很好用，折腾了很久， 今天终于解决了。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h2 id="场景还原"><a href="#场景还原" class="headerlink" title="场景还原"></a>场景还原</h2><ol>
+<li>在官网上下载<code>https://www.google.cn/chrome/</code> 下载后, 第一次打开是好的, 第二次打开就莫名的打开了hao123。</li>
+<li>网上说找到安装目录(<code>&quot;C:\Program Files (x86)\Google\Chrome\Application\chrome.exe&quot;</code>)后， 把chrome.exe 换个名字， 在创建一个快捷方式， 再使用, 这个方案的确可以， 但是木马还在， 不能忍受。</li>
+<li>网上有很多帖子说改注册表, 是过了, 没软用。</li>
+<li>下载360急救箱, 全盘扫描, 的确扫描出来了几个木马(360牛逼)， 顺利清除。</li>
+<li>重启电脑， 妈的， 电脑多了一个360急救箱的选项, 这我不能忍受了。</li>
+<li><code>win + r</code> 组合键， 输入 <strong>msconfig</strong> 找到引导选项卡， 把360急救箱的那列删除, 然而, 妈的, 这玩意删除按钮是灰色的, 又被强奸了…..</li>
+<li>查找了一番, 找到了个 easyBCD 软件, 安装后, 找到对应的引导选项删除。 欸， 这次终于搞定了, 感概一下, 想我祖国大地上有多少个电脑, 被这些玩意给强奸这。</li>
+</ol>
+<p>结尾最后， 分享一个网站： ·<code>http://poro.fun/</code>， 用了一段时间了， 还算稳定， 流量每天签到获取(没有验证码,可以写个脚本定时签到), 流量仅供查点资料。当让， 钱是好东西。</p>
+<!-- 得安装一个好看的中文字体 -->
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2019/05/07/%E6%B8%85%E9%99%A4redis%E6%97%A0%E7%94%A8%E6%95%B0%E6%8D%AE/">PREV</a><a class="next" href="/2019/04/07/auto-deploy-blog/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2019/04/12/记清除win10上流氓/';
+var disqus_title = '清除win10流氓';
+var disqus_url = 'https://loovien.github.io/2019/04/12/记清除win10上流氓/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

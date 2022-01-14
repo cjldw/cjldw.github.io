@@ -1,20 +1,15 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> bash shell 获取命令行参数 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="bash shell 获取命令行参数 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">bash shell 获取命令行参数</h1><div class="post-info">Jul 12, 2016</div><div class="post-content"><p>场景: 写bash脚本经长要获取命令行参数, so…</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<h4 id="bash-自动获取-本文参考stackoverflow"><a href="#bash-自动获取-本文参考stackoverflow" class="headerlink" title="bash 自动获取 本文参考stackoverflow"></a>bash 自动获取 本文参考<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash">stackoverflow</a></h4><pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">while</span> [[ <span class="variable">$#</span> -gt 0 ]] <span class="comment"># 判断有参数, 就获取</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  key=<span class="variable">$1</span></span><br><span class="line">  <span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></span><br><span class="line">    -u|--user)</span><br><span class="line">      <span class="built_in">echo</span> <span class="variable">$2</span> <span class="comment"># get -u | --user value</span></span><br><span class="line">      <span class="built_in">shift</span></span><br><span class="line">      ;;</span><br><span class="line">    -p|--password)</span><br><span class="line">      <span class="built_in">echo</span> <span class="variable">$2</span> <span class="comment"># get -p | --password value</span></span><br><span class="line">      <span class="built_in">shift</span></span><br><span class="line">      ;;</span><br><span class="line">    -h|--<span class="built_in">help</span>)</span><br><span class="line">      <span class="built_in">echo</span> <span class="string">&quot;Use: (-u | --user set username) : (-p | --password set passwod)&quot;</span>  <span class="comment"># get --help</span></span><br><span class="line">      <span class="built_in">shift</span></span><br><span class="line">      ;;</span><br><span class="line">  <span class="keyword">esac</span></span><br><span class="line">  <span class="built_in">shift</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>ps: <code>$#</code> 获取参数个数. <code>$@</code> 获取所有参数. <code>$1</code>获取第1个参数. 脚本<a target="_blank" rel="noopener" href="http://unix.stackexchange.com/questions/174566/what-is-the-purpose-of-using-shift-in-shell-scripts">shift</a>关键字的作用就很好理解咯</p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2016/08/15/%E6%89%B9%E9%87%8F%E5%88%A0%E9%99%A4redis%E5%88%B6%E5%AE%9A%E9%94%AE/">PREV</a><a class="next" href="/2016/05/31/%E5%8D%95%E7%82%B9%E7%99%BB%E5%85%A5(SSO)%E5%AE%9E%E7%8E%B0/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2016/07/12/bashshell-case-syntax/';
+var disqus_title = 'bash shell 获取命令行参数';
+var disqus_url = 'https://loovien.github.io/2016/07/12/bashshell-case-syntax/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

@@ -1,20 +1,18 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> BASH保留指定目录下指定个数文件 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="某个目录至保存指定个数文件, 可以根据脚本删除多余的文件"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">BASH保留指定目录下指定个数文件</h1><div class="post-info">Jul 12, 2017</div><div class="post-content"><p>线上有一台服务器, 每天凌晨3点做数据库的全量备份, 然后打包到指定目录, 前几天, 磁盘下满了, 查看该目录下<br>文件多达2个多月了, 不行, 要定期清理.</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<h3 id="获取该目录下需要被删除的文件列表"><a href="#获取该目录下需要被删除的文件列表" class="headerlink" title="获取该目录下需要被删除的文件列表"></a>获取该目录下需要被删除的文件列表</h3><p>由于该目录下备份文件有规则, 为<code>database_YYYYMMDD.tgz</code>, 因此列出需要删除的文件 <code>ls | sort -r | sed -n &#39;30,$p&#39;</code></p>
+<p><code>sort -r</code> 逆向排序, 默认会根据<code>YYYYMMDD</code>来循序排列<br><code>sed -n &#39;30,$p&#39;</code> sed将30行到地步的行打印出来<br><code>rm file</code> 最后删除列出的文件名称.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="comment"># Author: luowen</span></span><br><span class="line"><span class="comment"># Email: bigpao.luo@gmail.com</span></span><br><span class="line"><span class="comment"># Description: only keep one mouth db backup file</span></span><br><span class="line"><span class="comment"># Time: 2017-07-12 22:00:00</span></span><br><span class="line"></span><br><span class="line">DB_BACKUP_DIR=/var/data/mysqldb</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> expire_file <span class="keyword">in</span> `ls <span class="variable">$DB_BACKUP_DIR</span> | sort -r | sed -n <span class="string">&#x27;30,$p&#x27;</span>`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    rm <span class="string">&quot;<span class="variable">$DB_BACKUP_DIR</span>/<span class="variable">$expire_file</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span>;</span><br></pre></td></tr></table></figure>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
 
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<p><strong>这是最简单的方法, 还有就是当前时间-mtime, 如果时间大于一个月的, 就删除.</strong><br><strong>方法还很多, 详细就不列出来了</strong></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2017/07/18/idcard-validate-rule/">PREV</a><a class="next" href="/2017/07/10/mysql-isolation-level/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2017/07/12/bash保留指定目录下文件个数/';
+var disqus_title = 'BASH保留指定目录下指定个数文件';
+var disqus_url = 'https://loovien.github.io/2017/07/12/bash保留指定目录下文件个数/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

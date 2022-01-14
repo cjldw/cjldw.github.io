@@ -1,20 +1,20 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 使用seleium+chrome实现自动学习 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="学习强国每日30分"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">使用seleium+chrome实现自动学习</h1><div class="post-info">Aug 21, 2020</div><div class="post-content"><p>老婆的学习强国账号，每日要学满30分。 每天也是一个任务，作为一个开发者，本着学习的态度， 实现它(包含学习文章， 学习视频， 每日答题)。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<p>大致的实现逻辑也很简单，就是使用selenium+chromedriver 自动化测试工具，完整的代替手工的点来点去。</p>
+<p>为了防检测， 也把对应人chromedriver的标示， window navigator 的标示清除了。</p>
+<p>具体的效果如下：</p>
+<p>例子中先答题，后学习文章3篇， 文章学习时长10秒， 视频学习3个 视频学习时间10秒， 图片过大，截了一段。</p>
+<p><img src="/images/videos/xuexi1.gif" alt="案例"></p>
+<p>PS: 学习官方说会有检测机制，虽然把driver的标示去掉了，浏览器的标示也去掉了， 具体也不知道是怎么检测的，所以谨慎使用。</p>
+<p>需要学习源码可以加微信，获取。</p>
+<p><img src="/images/weixin1.png" alt="超级罗大文"></p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2020/08/29/%E4%BD%BF%E7%94%A8%E7%8C%B4%E6%B2%B9%E6%8F%92%E4%BB%B6%E7%9C%8Bvip%E7%94%B5%E5%BD%B1/">PREV</a><a class="next" href="/2020/05/05/how-to-use-opentracing/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2020/08/21/使用selenium+chrome实现自动学习强国/';
+var disqus_title = '使用seleium+chrome实现自动学习';
+var disqus_url = 'https://loovien.github.io/2020/08/21/使用selenium+chrome实现自动学习强国/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

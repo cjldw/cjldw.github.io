@@ -1,20 +1,63 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 编译php常见错误集合 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="编译php常见的各种错误, 看着头痛, 今天整理下"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">编译php常见错误集合</h1><div class="post-info">Apr 1, 2018</div><div class="post-content"><p>编译php7的扩展插件, 依赖的东西还蛮多的, 编译起来总是不那么丝滑顺畅, 今天把常见的问题整理下。</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境:"></a>环境:</h4><ul>
+<li>系统 centos7</li>
+<li>php7.2</li>
+</ul>
+<h4 id="openSSL-扩展"><a href="#openSSL-扩展" class="headerlink" title="openSSL 扩展"></a>openSSL 扩展</h4><p>编译添加openSSL扩展</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install openssl openssl-devel</span><br></pre></td></tr></table></figure>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+<h4 id="bz2-扩展"><a href="#bz2-扩展" class="headerlink" title="bz2 扩展"></a>bz2 扩展</h4><p>编译打开了bz2扩展会碰到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> BZip2 support… yes</span><br><span class="line">checking <span class="keyword">for</span> BZip2 <span class="keyword">in</span> default path… not found</span><br><span class="line">configure: error: Please reinstall the BZip2 distribution</span><br></pre></td></tr></table></figure>
+<p>解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yun install bzip2 bzip2-devel</span><br></pre></td></tr></table></figure>
 
-block container
-    include mixins/post
-    +post(page)
+<h4 id="curl-扩展"><a href="#curl-扩展" class="headerlink" title="curl 扩展"></a>curl 扩展</h4><p>编译打开了curl扩展会碰上个</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> cURL support… yes</span><br><span class="line">checking <span class="keyword">if</span> we should use cURL <span class="keyword">for</span> url streams… no</span><br><span class="line">checking <span class="keyword">for</span> cURL <span class="keyword">in</span> default path… not found</span><br><span class="line">configure: error: Please reinstall the libcurl distribution -</span><br><span class="line">easy.h should be <span class="keyword">in</span> /include/curl/</span><br></pre></td></tr></table></figure>
+<p>解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yun install curl curl-devel</span><br></pre></td></tr></table></figure>
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+<h4 id="gd-扩展"><a href="#gd-扩展" class="headerlink" title="gd 扩展"></a>gd 扩展</h4><p>编译开启了gd扩展会碰上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> fabsf… yes</span><br><span class="line">checking <span class="keyword">for</span> floorf… yes</span><br><span class="line">configure: error: jpeglib.h not found.</span><br><span class="line">checking <span class="keyword">for</span> fabsf… yes</span><br><span class="line">checking <span class="keyword">for</span> floorf… yes</span><br><span class="line">checking <span class="keyword">for</span> jpeg_read_header <span class="keyword">in</span> -ljpeg… yes</span><br><span class="line">configure: error: png.h not found.</span><br></pre></td></tr></table></figure>
+<p>解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install libpng libpng-devel</span><br></pre></td></tr></table></figure>
 
-block copyright
-    include partial/copyright
+<h4 id="freetype-字体扩展"><a href="#freetype-字体扩展" class="headerlink" title="freetype 字体扩展"></a>freetype 字体扩展</h4><p>系统没有 freetype 库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> png_write_image <span class="keyword">in</span> -lpng… yes</span><br><span class="line">If configure fails try –with-xpm-dir=</span><br><span class="line">configure: error: freetype.h not found.</span><br></pre></td></tr></table></figure>
+<p>解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://download.savannah.gnu.org/releases/freetype/freetype-2.4.0.tar.bz2</span><br><span class="line">$ tar -jxvf freetype-2.4.0.tar.bz2</span><br><span class="line">$ <span class="built_in">cd</span> freetype-2.4.0</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+<h4 id="libxml-扩展"><a href="#libxml-扩展" class="headerlink" title="libxml 扩展"></a>libxml 扩展</h4><p>系统缺少 libxml 库支持</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: xml2-config not found. Please check your libxml2 installation.</span><br></pre></td></tr></table></figure>
+<p>解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install libxml libxml-devel</span><br></pre></td></tr></table></figure>
+
+<h4 id="pcre-类库"><a href="#pcre-类库" class="headerlink" title="pcre 类库"></a>pcre 类库</h4><p>系统缺少 pcre 库支持</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> PCRE headers location… configure: error: Could not find pcre.h <span class="keyword">in</span> /usr</span><br></pre></td></tr></table></figure>
+<p>解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install pcre pcre-devel</span><br></pre></td></tr></table></figure>
+
+<h4 id="t1lib支持"><a href="#t1lib支持" class="headerlink" title="t1lib支持"></a>t1lib支持</h4><p>系统缺少t1lib支持</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Your t1lib distribution is not installed correctly. Please reinstall it.</span><br></pre></td></tr></table></figure>
+<p>解决</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install t1lib-devel.x86_64</span><br></pre></td></tr></table></figure>
+
+<h4 id="mcrypt-加解密类库"><a href="#mcrypt-加解密类库" class="headerlink" title="mcrypt 加解密类库"></a>mcrypt 加解密类库</h4><p>系统缺少 mcrypt 库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: mcrypt.h not found. Please reinstall libmcrypt.</span><br></pre></td></tr></table></figure>
+<p>解决</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install libmcrypt libmcrypt-devel</span><br></pre></td></tr></table></figure>
+
+<h4 id="mysql-相关的错误"><a href="#mysql-相关的错误" class="headerlink" title="mysql 相关的错误"></a>mysql 相关的错误</h4><p>出现mysql相关的错误总结一点</p>
+<ol>
+<li>mysql-devel 包需要安装, 基本不会有问题。</li>
+</ol>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2018/06/19/python%E8%A3%85%E9%A5%B0%E5%99%A8/">PREV</a><a class="next" href="/2018/03/20/%E5%9C%A8openresty%E4%B8%AD%E6%98%AF%E4%BD%BF%E7%94%A8lua%E8%84%9A%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B0%E8%80%81%E8%B7%AF%E7%94%B1%E5%B9%B3%E6%BB%91%E5%8D%87%E7%BA%A7/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2018/04/01/编译php常见错误集合/';
+var disqus_title = '编译php常见错误集合';
+var disqus_url = 'https://loovien.github.io/2018/04/01/编译php常见错误集合/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

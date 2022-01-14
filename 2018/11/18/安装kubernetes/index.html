@@ -1,20 +1,56 @@
-extends partial/layout
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 安装kubernetes · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="linux 安装 kubernetes"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">安装kubernetes</h1><div class="post-info">Nov 18, 2018</div><div class="post-content"><p>最近在学习 kubernetes, 发现这玩意学习曲线很陡啊， 困难重重, 一是很多概念, 二是在天朝, 妈蛋安装起来就是一道坎, 今天终于安装成功了, 马克下!</p>
+<span id="more"></span>
 
-block site_title
-    != page.title + " · " + config.title
+<h3 id="环境-算是入门级服务器了"><a href="#环境-算是入门级服务器了" class="headerlink" title="环境 (算是入门级服务器了)"></a>环境 (算是入门级服务器了)</h3><blockquote>
+<p>CentOS6 折腾了一下, 放弃了,浪费时间基本玩不了。</p>
+</blockquote>
+<ol>
+<li>Ubuntu 16.04.1 LTS</li>
+<li>2核2G</li>
+</ol>
+<h3 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h3><ol>
+<li>这个按<a target="_blank" rel="noopener" href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce-1">官方文档</a>来就可以安装了。</li>
+<li>也可使用<a target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/110806?spm=5176.8351553.0.0.1d071991O6binf">阿里云</a> 安装。</li>
+</ol>
+<h3 id="安装-kubeadm-kubectl"><a href="#安装-kubeadm-kubectl" class="headerlink" title="安装 kubeadm kubectl"></a>安装 kubeadm kubectl</h3><ol>
+<li>官方文档方式, 很抱歉, 需要科学上网</li>
+</ol>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install -y apt-transport-https curl</span><br><span class="line">curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -</span><br><span class="line">cat &lt;&lt;<span class="string">EOF &gt;/etc/apt/sources.list.d/kubernetes.list</span></span><br><span class="line"><span class="string">deb https://apt.kubernetes.io/ kubernetes-xenial main</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">apt-get update</span><br><span class="line">apt-get install -y kubelet kubeadm kubectl</span><br><span class="line">apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+<ol start="2">
+<li>使用阿里云镜像安装</li>
+</ol>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install -y apt-transport-https</span><br><span class="line">curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -</span><br><span class="line">cat &lt;&lt;<span class="string">EOF &gt;/etc/apt/sources.list.d/kubernetes.list</span></span><br><span class="line"><span class="string">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">apt-get update</span><br><span class="line">apt-get install -y kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
 
-block container
-    include mixins/post
-    +post(page)
+<h3 id="初始化kubernetes集群"><a href="#初始化kubernetes集群" class="headerlink" title="初始化kubernetes集群"></a>初始化kubernetes集群</h3><ol>
+<li>上面如果正常安装后, 可以初始化集群了。</li>
+</ol>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubeadmin init</span></span><br></pre></td></tr></table></figure>
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+<p> 这个命令基本是不会成功的, 因为需要到gcr.io上去pull镜像下来, 先从阿里云下载下来, 然后在改名字吧。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.2.24</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:1.2.2</span></span><br><span class="line"><span class="comment"># 更名后, 在初始化</span></span><br><span class="line"><span class="comment"># docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:v1.12.2 k8s.gcr.io/kube-apiserver:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:v1.12.2 k8s.gcr.io/kube-controller-manager:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:v1.12.2 k8s.gcr.io/kube-scheduler:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.12.2 k8s.gcr.io/kube-proxy:v1.12.2</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.2.24 k8s.gcr.io//etcd:3.2.24</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1 k8s.gcr.io/pause:3.1</span></span><br><span class="line"><span class="comment"># docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:1.2.2 k8s.gcr.io/coredns:1.2.2</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p> 再初始化集群了一次</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubeadmin init</span></span><br></pre></td></tr></table></figure>
 
-block copyright
-    include partial/copyright
+<p>出现 <code>Your Kubernetes master has initialized successfully!</code> 表明已经安装好了, 可以愉快的玩耍了。</p>
+<h3 id="配置-kubectl"><a href="#配置-kubectl" class="headerlink" title="配置 kubectl"></a>配置 kubectl</h3><ol>
+<li>默认kubctl 是和kube-apiserver 的8080通信的, 通过<code>kubeadmin init</code> 初始化后, 使用默认6443端口。</li>
+</ol>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure>
+
+<p> 其实就是更新端口, 和 kube-apiserver 通信。</p>
+<ol start="2">
+<li>校验是否成功</li>
+</ol>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> kubectl get nodes</span><br><span class="line"> NAME                STATUS     ROLES    AGE   VERSION</span><br><span class="line">ubuntu               NotReady   master   8d    v1.12.2</span><br></pre></td></tr></table></figure>
+
+<p> ps: 可以愉快的玩k8s了</p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2018/12/05/git%E4%B8%80%E9%94%AE%E5%8F%91%E5%B8%83/">PREV</a><a class="next" href="/2018/10/26/JSON%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%84%E7%BB%99HightChart%E7%BB%98%E5%9B%BE/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2018/11/18/安装kubernetes/';
+var disqus_title = '安装kubernetes';
+var disqus_url = 'https://loovien.github.io/2018/11/18/安装kubernetes/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>

@@ -1,20 +1,15 @@
-extends partial/layout
-
-block site_title
-    != page.title + " · " + config.title
-
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
-
-block container
-    include mixins/post
-    +post(page)
-
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
-
-block copyright
-    include partial/copyright
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> linux下nginx+php-fpm运行用户以及资源目录的权限 · luowen&weiwei-(luowen ❤️ wwei)</title><meta name="description" content="linux下nginx+php-fpm运行用户以及资源目录的权限 - luowen&lt;loovien@163.com&gt;"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><!--if theme.googlefonts//link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><!--else //link(rel="stylesheet", href="https://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type='text/css')--><meta name="generator" content="Hexo 6.0.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="http://weibo.com/loovien" target="_blank">WEIBO</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/loovien" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="/me/" target="_self">ABOUTME</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">linux下nginx+php-fpm运行用户以及资源目录的权限</h1><div class="post-info">Jun 30, 2015</div><div class="post-content"><p>最近研究了下linux下nginx+php-fpm等web服务的运行用户,和web目录的权限</p>
+<p>之前以为,nginx php-fpm 等服务,是用户登入的linux服务器上后, 然后运行对应的服务, 该服务就是以那个用户身份在跑的,后面发现是错的, 普通用户登入,没有权限启动服务.</p>
+<p>&nbsp;</p>
+<p>google,下,找同事了解到, 猜发现, 服务的运行身份都是在配置文件中配置的, 如nginx服务, 在nginx.conf的开头有user [用户名] &nbsp;这就表示以填写的用户运行该模式了. 对应的web资源,必须对填写的用户读的权限了, 如果加了php-fpm服务, 可以讲各个用户添加到一个web组中,然后对php资源,和web资源给web组加读取权限.</p>
+<p>&nbsp;</p>
+<p>以上描述只是个人和以前同事的理解,如有错误,欢迎指正. 3ks!</p>
+</div></article></div></section><footer><div class="paginator"><a class="prev" href="/2015/07/25/CentOS-Debian%E7%AD%89Linux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90-1/">PREV</a><a class="next" href="/2015/06/25/php%E5%9B%BE%E7%89%87%E6%B0%B4%E5%8D%B0%E7%B1%BB/">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'superwm';
+var disqus_identifier = '2015/06/30/linux下nginx-php-fpm运行用户以及资源目录的权限/';
+var disqus_title = 'linux下nginx+php-fpm运行用户以及资源目录的权限';
+var disqus_url = 'https://loovien.github.io/2015/06/30/linux下nginx-php-fpm运行用户以及资源目录的权限/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//#{theme.disqus}.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2022 <a href="https://loovien.github.io">luowen<loovien@163.com></a>, unless otherwise noted.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async src="/js/embed.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-78479444-1",'auto');ga('send','pageview');</script></body></html>
