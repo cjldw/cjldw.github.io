@@ -1,0 +1,20 @@
+name: document-build
+on: [push]
+jobs:
+  use-hexo-build-website:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - run: npm install hexo-cli -g
+      - run: ls ./
+      - run: npm install
+      - run: npm run build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.token }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+

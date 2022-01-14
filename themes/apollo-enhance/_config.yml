@@ -1,0 +1,27 @@
+menu:
+    Blog: /
+    Archive: /archives/
+    Weibo: http://weibo.com/loovien
+    GitHub: https://github.com/loovien
+    AboutMe: /me/
+    Rss: /atom.xml
+
+favicon: /favicon.png
+logo: /favicon.png
+
+# Comment
+# e.g disqus: seansun
+disqus: superwm
+#duoshuo: superwm
+
+# Analytics
+# google-analytics:
+ga: UA-78479444-1
+
+# Copyright Infomation
+startyear: 2015
+
+# Font CDN
+#true : use google fonts api, not stable for chinese visitor sometimes, caused by force majeure factor
+#false: use useso fonts api instead of google's, great response speed for chinese visitor
+googlefonts: false
