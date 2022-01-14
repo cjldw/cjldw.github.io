@@ -14,13 +14,13 @@ date: 2022-01-14 21:32:00
 
 ## 原先的更新方式
 
-原先的方式是使用hexo的本地的策略从创建，到生成，到发布。 对应命令
+原先的方式是使用[hexo](https://hexo.io)的本地的策略从创建，到生成，到发布。 对应命令:
 
 ```bash
     $ hexo new post xxx # 新建blog。
     $ vim _source/_post/xxx.md # 编辑blog。
     $ hexo generate # 生成静态文件。
-    $ hexo deploy # 发布到对应 username.github.io 仓库。
+    $ hexo deploy # 发布到对应 loovien.github.io 仓库。
 ```
 
 优点：
@@ -31,12 +31,18 @@ date: 2022-01-14 21:32:00
 
 1. 本地需要要nodejs环境。
 2. 本地需要安装项目依赖的npm包。
-3. 需要有2个项目来支持，A: 源文件仓库。 B：github Pages 仓库（username.github.io）。
+3. 需要有2个项目来支持，A: 源文件仓库(当前)。 B：github Pages 仓库（loovien.github.io），`hexo deploy` 就是将对应生成的静态文件发布到`loovien.github.io`项目上。
 
 
-## 最新的方式（github Actions）
+## 最新的方式（github workflows）
 
 原理单纯的就使用hexo的骨架，在源码目录下上对应的博客（markdown文件）。然后提交到github仓库。使用github workflow 自动构建。
+
+解决：
+
+1. 本地不依赖node环境， 专注写好markdown文件即可。
+2. 优化项目， 只需要一个项目（loovien.github.io), master分支放源文件，gh-pages 放对应生成的静态文件。
+3. 优化发布步骤，写好的博客，推送远程即可。
 
 [官方文档](https://hexo.io/docs/gitlab-pages)
 
@@ -58,15 +64,16 @@ date: 2022-01-14 21:32:00
 ```bash
     $ cd blog-code
     $ git init
-    $ git remote add origin git@github.com:username/username.github.io.git
+    $ git remote add origin git@github.com:loovien/loovien.github.io.git
 ```
 
 4. 创建github workflows 流程。
 
-    * 项目下创建目录`.github/workflows/`
-    * 新建workflow脚本（类似.gitlab-ci.yml)
+    * 项目下创建目录`.github/workflows/`同（`_source`目录同级）
+    * 新建workflow脚本（类似.gitlab-ci.yml)， 名字随意（如auto-build.yml)
 
 ```yaml
+# auto-build.yml
 name: document-build
 on: [push]
 jobs:
@@ -119,4 +126,5 @@ balabala ....
     $ git push
 ```
 
+7. 最后设置下项目pages对应gh-pages分支。 `https://github.com/loovien/loovien.github.io/settings/secrets/actions`， 访问[blog地址](https://loovien.github.io)。
 
